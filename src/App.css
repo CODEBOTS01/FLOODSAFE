@@ -1,0 +1,2402 @@
+/* ========================================
+   RESET
+======================================== */
+html,
+body,
+#root {
+  width: 100%;
+  min-width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  max-width: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+
+  font-family:
+    Inter,
+    Arial,
+    Helvetica,
+    sans-serif;
+
+  color: #0f172a;
+
+  background: #020617;
+
+  overflow-x: hidden;
+}
+
+
+/* ========================================
+   MAIN ANIMATED BACKGROUND
+======================================== */
+
+.app-background {
+  min-height: 100vh;
+
+  width: 100%;
+
+  position: relative;
+
+  padding: 20px 0 40px;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 20% 20%,
+      rgba(14, 165, 233, 0.25),
+      transparent 30%
+    ),
+
+    radial-gradient(
+      circle at 80% 80%,
+      rgba(34, 211, 238, 0.18),
+      transparent 30%
+    ),
+
+    linear-gradient(
+      135deg,
+      #020617,
+      #082f49,
+      #031525
+    );
+}
+
+
+/* ========================================
+   MOVING FUTURISTIC GRID
+======================================== */
+
+.app-background::before {
+  content: "";
+
+  position: fixed;
+
+  inset: 0;
+
+  background-image:
+    linear-gradient(
+      rgba(56, 189, 248, 0.07) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(56, 189, 248, 0.07) 1px,
+      transparent 1px
+    );
+
+  background-size:
+    60px 60px;
+
+  animation:
+    moveGrid 12s linear infinite;
+
+  pointer-events: none;
+
+  z-index: 0;
+}
+
+
+@keyframes moveGrid {
+  from {
+    background-position:
+      0 0;
+  }
+
+  to {
+    background-position:
+      60px 60px;
+  }
+}
+
+
+/* ========================================
+   RADAR CIRCLES
+======================================== */
+
+.app-background::after {
+  content: "";
+
+  position: fixed;
+
+  width: 700px;
+  height: 700px;
+
+  left: -280px;
+  top: 70px;
+
+  border-radius: 50%;
+
+  background:
+    repeating-radial-gradient(
+      circle,
+      transparent 0,
+      transparent 65px,
+      rgba(34, 211, 238, 0.08) 67px,
+      transparent 69px
+    );
+
+  animation:
+    radarRotate 24s linear infinite;
+
+  pointer-events: none;
+
+  z-index: 0;
+}
+
+
+@keyframes radarRotate {
+  from {
+    transform:
+      rotate(0deg);
+  }
+
+  to {
+    transform:
+      rotate(360deg);
+  }
+}
+
+
+/* ========================================
+   MOVING GLOW ORBS
+======================================== */
+
+.blob {
+  position: fixed;
+
+  border-radius: 50%;
+
+  filter: blur(95px);
+
+  pointer-events: none;
+
+  opacity: 0.42;
+
+  z-index: 0;
+}
+
+
+.blob1 {
+  width: 430px;
+  height: 430px;
+
+  background: #06b6d4;
+
+  top: -160px;
+  left: -130px;
+
+  animation:
+    orbOne 14s ease-in-out infinite alternate;
+}
+
+
+.blob2 {
+  width: 520px;
+  height: 520px;
+
+  background: #2563eb;
+
+  right: -200px;
+  bottom: -180px;
+
+  animation:
+    orbTwo 18s ease-in-out infinite alternate;
+}
+
+
+.blob3 {
+  width: 320px;
+  height: 320px;
+
+  background: #22d3ee;
+
+  left: 52%;
+  top: 40%;
+
+  animation:
+    orbThree 16s ease-in-out infinite alternate;
+}
+
+
+@keyframes orbOne {
+  0% {
+    transform:
+      translate(0, 0)
+      scale(1);
+  }
+
+  100% {
+    transform:
+      translate(260px, 170px)
+      scale(1.35);
+  }
+}
+
+
+@keyframes orbTwo {
+  0% {
+    transform:
+      translate(0, 0)
+      scale(1);
+  }
+
+  100% {
+    transform:
+      translate(-280px, -180px)
+      scale(1.2);
+  }
+}
+
+
+@keyframes orbThree {
+  0% {
+    transform:
+      translate(-50%, 0)
+      scale(0.85);
+  }
+
+  100% {
+    transform:
+      translate(-90%, -180px)
+      scale(1.4);
+  }
+}
+
+
+/* ========================================
+   MAIN WEBSITE
+======================================== */
+
+.page {
+  width: 94%;
+
+  max-width: 1500px;
+
+  margin: auto;
+
+  position: relative;
+
+  z-index: 2;
+
+  background:
+    rgba(241, 245, 249, 0.96);
+
+  border:
+
+    1px solid
+    rgba(255, 255, 255, 0.15);
+
+  border-radius: 24px;
+
+  overflow: hidden;
+
+  backdrop-filter:
+    blur(18px);
+
+  box-shadow:
+    0 30px 90px
+    rgba(0, 0, 0, 0.55),
+
+    0 0 100px
+    rgba(14, 165, 233, 0.08);
+}
+
+
+/* ========================================
+   NAVBAR
+======================================== */
+
+.navbar {
+  height: 76px;
+
+  padding:
+    0 7%;
+
+  display: flex;
+
+  justify-content:
+    space-between;
+
+  align-items: center;
+
+  color: white;
+
+  background:
+    rgba(3, 22, 37, 0.96);
+
+  backdrop-filter:
+    blur(14px);
+}
+
+.navbar h2 {
+  margin: 0;
+
+  font-size: 26px;
+
+  letter-spacing: 1.5px;
+
+  background: linear-gradient(
+    90deg,
+    #38bdf8,
+    #22d3ee,
+    #60a5fa,
+    #a78bfa
+  );
+
+  background-size: 250%;
+
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  color: transparent;
+
+  animation: logoGradient 5s linear infinite;
+}
+
+@keyframes logoGradient {
+  0% {
+    background-position: 0%;
+  }
+
+  100% {
+    background-position: 250%;
+  }
+}
+
+
+@keyframes logoGlow {
+  from {
+    text-shadow:
+      0 0 5px
+      rgba(56, 189, 248, 0.3);
+  }
+
+  to {
+    text-shadow:
+      0 0 22px
+      rgba(56, 189, 248, 0.95);
+  }
+}
+
+
+.navbar nav {
+  display: flex;
+
+  gap: 35px;
+}
+
+
+.navbar nav span {
+  cursor: pointer;
+
+  font-size: 16px;
+
+  position: relative;
+
+  transition:
+    color 0.3s;
+}
+
+
+.navbar nav span::after {
+  content: "";
+
+  position: absolute;
+
+  left: 0;
+  bottom: -8px;
+
+  width: 0;
+
+  height: 2px;
+
+  background:
+    #38bdf8;
+
+  transition:
+    width 0.3s;
+}
+
+
+.navbar nav span:hover {
+  color:
+    #38bdf8;
+}
+
+
+.navbar nav span:hover::after {
+  width: 100%;
+}
+
+
+/* ========================================
+   HERO
+======================================== */
+
+.hero {
+  min-height: 370px;
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: center;
+
+  text-align: center;
+
+  color: white;
+
+  padding:
+    65px 8%;
+
+  position: relative;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(56, 189, 248, 0.25),
+      transparent 35%
+    ),
+
+    linear-gradient(
+      120deg,
+      #082f49,
+      #0e7490
+    );
+}
+
+
+/* Moving light inside hero */
+
+.hero::before {
+  content: "";
+
+  position: absolute;
+
+  width: 500px;
+  height: 500px;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(56, 189, 248, 0.28),
+      transparent 65%
+    );
+
+  border-radius: 50%;
+
+  left: -250px;
+
+  animation:
+    heroLight 10s
+    ease-in-out infinite alternate;
+}
+
+
+@keyframes heroLight {
+  from {
+    transform:
+      translate(0, 0);
+  }
+
+  to {
+    transform:
+      translate(900px, 80px);
+  }
+}
+
+
+.hero-content {
+  position: relative;
+
+  z-index: 2;
+
+  max-width: 900px;
+}
+
+
+.hero-badge {
+  display: inline-block;
+
+  padding:
+    7px 16px;
+
+  border-radius:
+    30px;
+
+  border:
+    1px solid
+    rgba(255,255,255,0.25);
+
+  background:
+    rgba(255,255,255,0.08);
+
+  font-size: 12px;
+
+  letter-spacing:
+    1.5px;
+}
+
+
+.hero h1 {
+  margin: 22px 0 10px;
+
+  font-size: clamp(36px, 5vw, 54px);
+
+  line-height: 1.05;
+
+  background: linear-gradient(
+    90deg,
+    #38bdf8,
+    #22d3ee,
+    #a78bfa,
+    #f472b6,
+    #38bdf8
+  );
+
+  background-size: 300%;
+
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  color: transparent;
+
+  animation: headingGradient 6s linear infinite;
+}
+
+@keyframes headingGradient {
+  0% {
+    background-position: 0%;
+  }
+
+  100% {
+    background-position: 300%;
+  }
+}
+
+
+.hero-description {
+  color:
+    #dbeafe;
+
+  font-size:
+    19px;
+
+  margin-bottom:
+    30px;
+}
+
+
+.hero-buttons {
+  display: flex;
+
+  justify-content:
+    center;
+
+  gap: 12px;
+}
+
+
+.primary-btn,
+.secondary-btn {
+  padding:
+    13px 24px;
+
+  border:
+    none;
+
+  border-radius:
+    10px;
+
+  font-size:
+    15px;
+
+  font-weight:
+    600;
+
+  cursor:
+    pointer;
+
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s,
+    background 0.3s;
+}
+
+
+.primary-btn {
+  color:
+    white;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0ea5e9,
+      #0284c7
+    );
+}
+
+
+.primary-btn:hover {
+  transform:
+    translateY(-4px);
+
+  box-shadow:
+    0 12px 30px
+    rgba(14, 165, 233, 0.4);
+}
+
+
+.secondary-btn {
+  background:
+    white;
+
+  color:
+    #082f49;
+}
+
+
+.secondary-btn:hover {
+  transform:
+    translateY(-4px);
+
+  box-shadow:
+    0 12px 30px
+    rgba(255,255,255,0.18);
+}
+
+
+/* ========================================
+   MAP SECTION
+======================================== */
+
+.map-section {
+  padding:
+    45px 7% 30px;
+}
+
+
+.section-heading {
+  display: flex;
+
+  justify-content:
+    space-between;
+
+  align-items:
+    center;
+
+  margin-bottom:
+    20px;
+}
+
+
+.section-heading h2 {
+  margin: 5px 0 0;
+
+  font-size: 28px;
+
+  background: linear-gradient(
+    90deg,
+    #0284c7,
+    #06b6d4,
+    #7c3aed
+  );
+
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  color: transparent;
+}
+
+
+.small-heading {
+  color:
+    #0284c7;
+
+  font-size:
+    12px;
+
+  font-weight:
+    bold;
+
+  letter-spacing:
+    1.4px;
+
+  margin: 0;
+}
+
+
+/* ========================================
+   LIVE STATUS
+======================================== */
+
+.status-badge {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap: 8px;
+
+  padding:
+    8px 13px;
+
+  border-radius:
+    30px;
+
+  background:
+    #ecfdf5;
+
+  color:
+    #047857;
+
+  font-size:
+    13px;
+
+  font-weight:
+    600;
+}
+
+
+.status-dot {
+  width:
+    9px;
+
+  height:
+    9px;
+
+  border-radius:
+    50%;
+
+  background:
+    #22c55e;
+
+  animation:
+    livePulse 1.7s infinite;
+}
+
+
+@keyframes livePulse {
+  0% {
+    box-shadow:
+      0 0 0 0
+      rgba(34,197,94,0.7);
+  }
+
+  70% {
+    box-shadow:
+      0 0 0 11px
+      rgba(34,197,94,0);
+  }
+
+  100% {
+    box-shadow:
+      0 0 0 0
+      rgba(34,197,94,0);
+  }
+}
+
+
+/* ========================================
+   MAP CARD
+======================================== */
+
+.map-card {
+  background:
+    white;
+
+  padding:
+    14px;
+
+  border-radius:
+    20px;
+
+  overflow:
+    hidden;
+
+  box-shadow:
+    0 12px 35px
+    rgba(15,23,42,0.12);
+
+  transition:
+    transform 0.35s,
+    box-shadow 0.35s;
+}
+
+
+.map-card:hover {
+  transform:
+    translateY(-5px);
+
+  box-shadow:
+    0 20px 45px
+    rgba(15,23,42,0.18);
+}
+
+
+/* ========================================
+   STAT CARDS
+======================================== */
+
+.stats {
+  padding:
+    15px 7% 45px;
+
+  display:
+    grid;
+
+  grid-template-columns:
+    repeat(4,1fr);
+
+  gap:
+    18px;
+}
+
+
+.card {
+  background:
+    white;
+
+  padding:
+    22px;
+
+  border-radius:
+    18px;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    15px;
+
+  position:
+    relative;
+
+  overflow:
+    hidden;
+
+  box-shadow:
+    0 8px 25px
+    rgba(15,23,42,0.08);
+
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
+}
+
+
+/* animated light sweep */
+
+.card::before {
+  content: "";
+
+  position:
+    absolute;
+
+  width:
+    80px;
+
+  height:
+    200%;
+
+  top:
+    -50%;
+
+  left:
+    -120px;
+
+  transform:
+    rotate(20deg);
+
+  background:
+    rgba(56,189,248,0.08);
+
+  transition:
+    left 0.6s;
+}
+
+
+.card:hover::before {
+  left:
+    120%;
+}
+
+
+.card:hover {
+  transform:
+    translateY(-7px);
+
+  box-shadow:
+    0 18px 40px
+    rgba(15,23,42,0.15);
+}
+
+
+.card-icon {
+  width:
+    52px;
+
+  height:
+    52px;
+
+  border-radius:
+    14px;
+
+  background:
+    #e0f2fe;
+
+  display:
+    flex;
+
+  justify-content:
+    center;
+
+  align-items:
+    center;
+
+  font-size:
+    24px;
+
+  flex-shrink:
+    0;
+}
+
+
+.card-title {
+  margin:
+    0;
+
+  color:
+    #64748b;
+
+  font-size:
+    14px;
+}
+
+
+.card h2 {
+  margin:
+    5px 0;
+
+  font-size:
+    28px;
+}
+
+
+.card-text {
+  margin:
+    0;
+
+  color:
+    #94a3b8;
+
+  font-size:
+    13px;
+}
+
+
+/* ========================================
+   ALERTS
+======================================== */
+
+.alerts {
+  margin:
+    0 7% 45px;
+
+  padding:
+    28px;
+
+  background:
+    white;
+
+  border-radius:
+    20px;
+
+  box-shadow:
+    0 10px 30px
+    rgba(15,23,42,0.08);
+}
+
+
+.alert-heading {
+  display:
+    flex;
+
+  justify-content:
+    space-between;
+
+  align-items:
+    center;
+
+  margin-bottom:
+    20px;
+}
+
+.section-heading h2 {
+  margin: 5px 0 0;
+
+  font-size: 28px;
+
+  background: linear-gradient(
+    90deg,
+    #0284c7,
+    #06b6d4,
+    #7c3aed
+  );
+
+  -webkit-background-clip: text;
+  background-clip: text;
+
+  color: transparent;
+}
+
+.view-all {
+  border:
+    none;
+
+  background:
+    #e0f2fe;
+
+  color:
+    #0369a1;
+
+  padding:
+    9px 15px;
+
+  border-radius:
+    8px;
+
+  cursor:
+    pointer;
+
+  transition:
+    transform 0.25s;
+}
+
+
+.view-all:hover {
+  transform:
+    translateY(-2px);
+}
+
+
+.alert {
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    15px;
+
+  padding:
+    17px;
+
+  margin-top:
+    12px;
+
+  border-radius:
+    12px;
+
+  transition:
+    transform 0.3s;
+}
+
+
+.alert:hover {
+  transform:
+    translateX(6px);
+}
+
+
+.alert h3 {
+  margin:
+    0 0 5px;
+
+  font-size:
+    15px;
+}
+
+
+.alert p {
+  margin:
+    0;
+
+  color:
+    #64748b;
+
+  font-size:
+    14px;
+}
+
+
+.alert-icon {
+  font-size:
+    22px;
+}
+
+
+.high-alert {
+  background:
+    #fff7ed;
+
+  border-left:
+    4px solid
+    #f97316;
+}
+
+
+.moderate-alert {
+  background:
+    #fefce8;
+
+  border-left:
+    4px solid
+    #eab308;
+}
+
+
+.high-label,
+.moderate-label {
+  margin-left:
+    auto;
+
+  padding:
+    5px 9px;
+
+  border-radius:
+    20px;
+
+  font-size:
+    11px;
+
+  font-weight:
+    bold;
+}
+
+
+.high-label {
+  color:
+    #c2410c;
+
+  background:
+    #ffedd5;
+}
+
+
+.moderate-label {
+  color:
+    #a16207;
+
+  background:
+    #fef9c3;
+}
+
+
+/* ========================================
+   FOOTER
+======================================== */
+
+.footer {
+  background:
+    #061827;
+
+  color:
+    white;
+
+  padding:
+    28px 7%;
+
+  display:
+    flex;
+
+  justify-content:
+    space-between;
+
+  align-items:
+    center;
+}
+
+
+.footer h3 {
+  margin:
+    0 0 5px;
+}
+
+
+.footer p {
+  margin:
+    0;
+
+  color:
+    #94a3b8;
+
+  font-size:
+    13px;
+}
+
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 1000px) {
+  .stats {
+    grid-template-columns:
+      repeat(2,1fr);
+  }
+}
+
+
+@media (max-width: 768px) {
+  .app-background {
+    padding: 0;
+  }
+
+  .page {
+    width:
+      100%;
+
+    border-radius:
+      0;
+  }
+
+  .navbar {
+    padding:
+      0 5%;
+  }
+
+  .navbar nav {
+    display:
+      none;
+  }
+
+  .hero {
+    min-height:
+      330px;
+
+    padding:
+      50px 5%;
+  }
+
+  .hero-description {
+    font-size:
+      16px;
+  }
+
+  .hero-buttons {
+    flex-direction:
+      column;
+
+    align-items:
+      center;
+  }
+
+  .primary-btn,
+  .secondary-btn {
+    width:
+      200px;
+  }
+
+  .map-section {
+    padding:
+      35px 5% 20px;
+  }
+
+  .section-heading {
+    flex-direction:
+      column;
+
+    align-items:
+      flex-start;
+
+    gap:
+      15px;
+  }
+
+  .stats {
+    padding:
+      15px 5% 35px;
+
+    grid-template-columns:
+      1fr;
+  }
+
+  .alerts {
+    margin:
+      0 5% 35px;
+  }
+
+  .high-label,
+  .moderate-label {
+    display:
+      none;
+  }
+
+  .footer {
+    flex-direction:
+      column;
+
+    align-items:
+      flex-start;
+
+    gap:
+      15px;
+  }
+}
+/* ========================================
+   DISTRICT HOVER POPUP
+======================================== */
+
+.maplibregl-popup-content {
+  background:
+    rgba(3, 22, 37, 0.95) !important;
+
+  color: white;
+
+  border:
+    1px solid
+    rgba(56, 189, 248, 0.35);
+
+  border-radius:
+    16px !important;
+
+  padding:
+    0 !important;
+
+  overflow:
+    hidden;
+
+  backdrop-filter:
+    blur(15px);
+
+  box-shadow:
+    0 15px 40px
+    rgba(0, 0, 0, 0.4),
+
+    0 0 25px
+    rgba(34, 211, 238, 0.15);
+}
+
+
+.maplibregl-popup-tip {
+  border-top-color:
+    rgba(3, 22, 37, 0.95) !important;
+}
+
+
+.district-popup {
+
+  width:
+    250px;
+
+  padding:
+    18px;
+
+}
+
+
+.popup-small {
+
+  color:
+    #22d3ee;
+
+  font-size:
+    10px;
+
+  font-weight:
+    bold;
+
+  letter-spacing:
+    1.5px;
+
+  margin:
+    0 0 5px;
+
+}
+
+
+.district-popup h2 {
+
+  margin:
+    0 0 15px;
+
+  font-size:
+    22px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #38bdf8,
+      #22d3ee,
+      #a78bfa
+    );
+
+  -webkit-background-clip:
+    text;
+
+  background-clip:
+    text;
+
+  color:
+    transparent;
+
+}
+
+
+.popup-stat {
+
+  display:
+    flex;
+
+  justify-content:
+    space-between;
+
+  align-items:
+    center;
+
+  padding:
+    8px 0;
+
+  border-bottom:
+    1px solid
+    rgba(255,255,255,0.08);
+
+}
+
+
+.popup-stat span {
+
+  color:
+    #cbd5e1;
+
+  font-size:
+    12px;
+
+}
+
+
+.popup-stat strong {
+
+  color:
+    #38bdf8;
+
+  font-size:
+    14px;
+
+}
+
+
+.popup-description {
+
+  color:
+    #94a3b8;
+
+  font-size:
+    12px;
+
+  line-height:
+    1.5;
+
+  margin:
+    13px 0 5px;
+
+}
+
+
+.demo-warning {
+
+  color:
+    #64748b;
+
+  font-size:
+    9px;
+
+  margin:
+    10px 0 0;
+
+  text-transform:
+    uppercase;
+
+  letter-spacing:
+    1px;
+
+}
+/* ========================================
+   FLOOD RISK LEGEND
+======================================== */
+
+.risk-legend {
+  position: absolute;
+
+  left: 18px;
+  bottom: 18px;
+
+  z-index: 10;
+
+  width: 155px;
+
+  padding: 14px 16px;
+
+  background:
+    rgba(3, 22, 37, 0.92);
+
+  backdrop-filter: blur(12px);
+
+  border:
+    1px solid
+    rgba(255, 255, 255, 0.15);
+
+  border-radius: 14px;
+
+  color: white;
+
+  box-shadow:
+    0 10px 30px
+    rgba(0, 0, 0, 0.3);
+}
+
+
+.risk-legend h3 {
+  margin: 0 0 10px;
+
+  font-size: 14px;
+
+  color: #38bdf8;
+}
+
+
+.legend-item {
+  display: flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  margin-top: 7px;
+
+  font-size: 12px;
+
+  color: #e2e8f0;
+}
+
+
+.legend-color {
+  width: 11px;
+
+  height: 11px;
+
+  border-radius: 50%;
+
+  box-shadow:
+    0 0 8px
+    rgba(255, 255, 255, 0.2);
+}
+
+/* ========================================
+   FULL SCREEN LOGIN PAGE
+======================================== */
+
+.login-page {
+  width: 100vw;
+  min-height: 100vh;
+
+  position: relative;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 15% 20%,
+      rgba(14, 165, 233, 0.28),
+      transparent 32%
+    ),
+    radial-gradient(
+      circle at 85% 75%,
+      rgba(99, 102, 241, 0.22),
+      transparent 32%
+    ),
+    linear-gradient(
+      135deg,
+      #020617,
+      #082f49,
+      #020617
+    );
+}
+
+
+/* GRID BACKGROUND */
+
+.login-page::before {
+  content: "";
+
+  position: fixed;
+
+  inset: 0;
+
+  background-image:
+    linear-gradient(
+      rgba(56, 189, 248, 0.06) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(56, 189, 248, 0.06) 1px,
+      transparent 1px
+    );
+
+  background-size:
+    60px 60px;
+
+  animation:
+    loginGrid 12s linear infinite;
+
+  pointer-events: none;
+}
+
+
+@keyframes loginGrid {
+  from {
+    background-position: 0 0;
+  }
+
+  to {
+    background-position: 60px 60px;
+  }
+}
+
+
+/* ========================================
+   TWO COLUMN LAYOUT
+======================================== */
+
+.login-layout {
+  width: 100%;
+  min-height: 100vh;
+
+  display: grid;
+
+  grid-template-columns:
+    1.1fr 0.9fr;
+
+  position: relative;
+
+  z-index: 2;
+}
+
+
+/* ========================================
+   LEFT FLOOD INFORMATION
+======================================== */
+
+.flood-info-panel {
+  min-height: 100vh;
+
+  display: flex;
+
+  align-items: center;
+
+  padding:
+    70px 7%;
+
+  border-right:
+    1px solid
+    rgba(56, 189, 248, 0.13);
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(2, 6, 23, 0.68),
+      rgba(8, 47, 73, 0.30)
+    );
+}
+
+
+.info-content {
+  width: 100%;
+
+  max-width: 720px;
+}
+
+
+.info-small {
+  margin:
+    0 0 14px;
+
+  color:
+    #22d3ee;
+
+  font-size:
+    12px;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    2px;
+}
+
+
+.info-content h1 {
+  margin:
+    0;
+
+  font-size:
+    clamp(38px, 4vw, 62px);
+
+  line-height:
+    1.05;
+
+  background:
+    linear-gradient(
+      90deg,
+      #ffffff,
+      #38bdf8,
+      #22d3ee
+    );
+
+  -webkit-background-clip:
+    text;
+
+  background-clip:
+    text;
+
+  color:
+    transparent;
+}
+
+
+.info-description {
+  max-width:
+    650px;
+
+  margin:
+    20px 0 30px;
+
+  color:
+    #cbd5e1;
+
+  line-height:
+    1.7;
+
+  font-size:
+    15px;
+}
+
+
+/* ========================================
+   HISTORY CARDS
+======================================== */
+
+.history-cards {
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  gap:
+    14px;
+}
+
+
+.history-card {
+  display:
+    flex;
+
+  gap:
+    18px;
+
+  padding:
+    18px;
+
+  border-radius:
+    16px;
+
+  background:
+    rgba(15, 23, 42, 0.65);
+
+  backdrop-filter:
+    blur(12px);
+
+  border:
+    1px solid
+    rgba(255,255,255,0.08);
+
+  transition:
+    transform 0.3s,
+    border 0.3s,
+    box-shadow 0.3s;
+}
+
+
+.history-card:hover {
+  transform:
+    translateX(8px);
+
+  border-color:
+    rgba(56, 189, 248, 0.35);
+
+  box-shadow:
+    0 12px 35px
+    rgba(0, 0, 0, 0.2);
+}
+
+
+.history-year {
+  width:
+    64px;
+
+  height:
+    64px;
+
+  flex-shrink:
+    0;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  border-radius:
+    14px;
+
+  color:
+    white;
+
+  font-size:
+    17px;
+
+  font-weight:
+    800;
+}
+
+
+.critical-history .history-year {
+  background:
+    linear-gradient(
+      135deg,
+      #ef4444,
+      #991b1b
+    );
+}
+
+
+.high-history .history-year {
+  background:
+    linear-gradient(
+      135deg,
+      #f97316,
+      #c2410c
+    );
+}
+
+
+.moderate-history .history-year {
+  background:
+    linear-gradient(
+      135deg,
+      #eab308,
+      #a16207
+    );
+}
+
+
+.history-card h3 {
+  margin:
+    0 0 6px;
+
+  color:
+    white;
+
+  font-size:
+    16px;
+}
+
+
+.history-card p {
+  margin:
+    0 0 8px;
+
+  color:
+    #94a3b8;
+
+  font-size:
+    13px;
+
+  line-height:
+    1.5;
+}
+
+
+.history-card span {
+  color:
+    #38bdf8;
+
+  font-size:
+    11px;
+
+  font-weight:
+    600;
+}
+
+
+/* ========================================
+   SAFETY MESSAGE
+======================================== */
+
+.safety-message {
+  margin-top:
+    24px;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  gap:
+    14px;
+
+  padding:
+    16px;
+
+  border-radius:
+    14px;
+
+  background:
+    rgba(14, 165, 233, 0.08);
+
+  border:
+    1px solid
+    rgba(56, 189, 248, 0.15);
+}
+
+
+.safety-icon {
+  font-size:
+    28px;
+}
+
+
+.safety-message strong {
+  color:
+    white;
+}
+
+
+.safety-message p {
+  margin:
+    4px 0 0;
+
+  color:
+    #94a3b8;
+
+  font-size:
+    12px;
+}
+
+
+/* ========================================
+   RIGHT REGISTRATION SIDE
+======================================== */
+
+.registration-panel {
+  min-height:
+    100vh;
+
+  display:
+    flex;
+
+  align-items:
+    center;
+
+  justify-content:
+    center;
+
+  padding:
+    45px;
+}
+
+
+.login-card {
+  width:
+    100%;
+
+  max-width:
+    520px;
+
+  padding:
+    38px;
+
+  border-radius:
+    24px;
+
+  color:
+    white;
+
+  background:
+    rgba(8, 47, 73, 0.60);
+
+  border:
+    1px solid
+    rgba(56, 189, 248, 0.25);
+
+  backdrop-filter:
+    blur(18px);
+
+  box-shadow:
+    0 30px 80px
+    rgba(0, 0, 0, 0.38),
+
+    0 0 50px
+    rgba(14, 165, 233, 0.08);
+}
+
+
+/* LOGO */
+
+.login-logo {
+  font-size:
+    30px;
+
+  font-weight:
+    800;
+
+  letter-spacing:
+    2px;
+
+  background:
+    linear-gradient(
+      90deg,
+      #38bdf8,
+      #22d3ee,
+      #a78bfa,
+      #38bdf8
+    );
+
+  background-size:
+    250%;
+
+  -webkit-background-clip:
+    text;
+
+  background-clip:
+    text;
+
+  color:
+    transparent;
+
+  animation:
+    loginLogo 5s linear infinite;
+}
+
+
+@keyframes loginLogo {
+  from {
+    background-position: 0%;
+  }
+
+  to {
+    background-position: 250%;
+  }
+}
+
+
+.login-small {
+  margin:
+    12px 0 8px;
+
+  font-size:
+    11px;
+
+  color:
+    #22d3ee;
+
+  font-weight:
+    700;
+
+  letter-spacing:
+    1.6px;
+}
+
+
+.login-card h2 {
+  margin:
+    0 0 8px;
+
+  font-size:
+    32px;
+}
+
+
+.login-description {
+  margin:
+    0 0 24px;
+
+  color:
+    #cbd5e1;
+
+  font-size:
+    14px;
+}
+
+
+/* ========================================
+   FORM
+======================================== */
+
+.login-form {
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  gap:
+    16px;
+}
+
+
+.input-group {
+  display:
+    flex;
+
+  flex-direction:
+    column;
+
+  gap:
+    7px;
+}
+
+
+.input-group label {
+  color:
+    #e2e8f0;
+
+  font-size:
+    13px;
+
+  font-weight:
+    600;
+}
+
+
+.input-group input {
+  width:
+    100%;
+
+  padding:
+    14px 15px;
+
+  border:
+    1px solid
+    rgba(148, 163, 184, 0.25);
+
+  border-radius:
+    11px;
+
+  outline:
+    none;
+
+  color:
+    white;
+
+  font-size:
+    14px;
+
+  background:
+    rgba(15, 23, 42, 0.75);
+
+  transition:
+    border 0.3s,
+    box-shadow 0.3s,
+    transform 0.3s;
+}
+
+
+.input-group input::placeholder {
+  color:
+    #64748b;
+}
+
+
+.input-group input:focus {
+  border-color:
+    #38bdf8;
+
+  transform:
+    translateY(-1px);
+
+  box-shadow:
+    0 0 0 3px
+    rgba(56, 189, 248, 0.10),
+
+    0 0 20px
+    rgba(56, 189, 248, 0.12);
+}
+
+
+/* BUTTON */
+
+.login-button {
+  margin-top:
+    8px;
+
+  padding:
+    15px;
+
+  border:
+    none;
+
+  border-radius:
+    11px;
+
+  cursor:
+    pointer;
+
+  color:
+    white;
+
+  font-weight:
+    700;
+
+  font-size:
+    15px;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0ea5e9,
+      #06b6d4,
+      #2563eb
+    );
+
+  transition:
+    transform 0.3s,
+    box-shadow 0.3s;
+}
+
+
+.login-button:hover {
+  transform:
+    translateY(-3px);
+
+  box-shadow:
+    0 12px 35px
+    rgba(14, 165, 233, 0.35);
+}
+
+
+.privacy-message {
+  margin:
+    20px 0 0;
+
+  color:
+    #94a3b8;
+
+  text-align:
+    center;
+
+  font-size:
+    11px;
+}
+
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 1000px) {
+
+  .login-layout {
+    grid-template-columns:
+      1fr;
+  }
+
+
+  .flood-info-panel {
+    min-height:
+      auto;
+
+    padding:
+      60px 7% 40px;
+
+    border-right:
+      none;
+
+    border-bottom:
+      1px solid
+      rgba(56, 189, 248, 0.13);
+  }
+
+
+  .registration-panel {
+    min-height:
+      auto;
+
+    padding:
+      40px 20px 60px;
+  }
+
+}
+
+
+@media (max-width: 600px) {
+
+  .info-content h1 {
+    font-size:
+      38px;
+  }
+
+
+  .history-card {
+    padding:
+      14px;
+  }
+
+
+  .history-year {
+    width:
+      52px;
+
+    height:
+      52px;
+
+    font-size:
+      14px;
+  }
+
+
+  .login-card {
+    padding:
+      28px 20px;
+  }
+
+}
