@@ -152,7 +152,7 @@ function App() {
                 onClick={() => {
 
                   window.location.href =
-                    "https://floodsafe-u207.onrender.com/";
+                    "https://floodsafe-u207.onrender.com/app";
 
                 }}
 
@@ -166,7 +166,8 @@ function App() {
 
               {/* ALERT BUTTON */}
 
-              <button className="secondary-btn">
+              <button 
+                className="secondary-btn">
 
                 View Alerts
 
