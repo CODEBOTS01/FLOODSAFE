@@ -17,18 +17,23 @@ const FloodMap = lazy(() => import("./components/FloodMap"));
 const Navbar = memo(function Navbar({
   contactsCount,
   onOpenContacts,
+  onNavigate,
 }: {
   contactsCount: number;
   onOpenContacts: () => void;
+  onNavigate: (sectionId: string) => void;
 }) {
   return (
     <header className="navbar">
       <h2>FLOODSAFE</h2>
 
       <nav>
-        <span>Home</span>
-        <span>Map</span>
-        <span>Alerts</span>
+        <span onClick={() => onNavigate("home")}>Home</span>
+        <span onClick={() => onNavigate("map")}>Map</span>
+        <span onClick={() => onNavigate("alerts")}>
+          Alerts
+          <span className="alert-badge">2</span>
+        </span>
         <span
           onClick={onOpenContacts}
           style={{
@@ -43,15 +48,19 @@ const Navbar = memo(function Navbar({
         >
           📞 Contacts ({contactsCount})
         </span>
-        <span>Dashboard</span>
+        <span onClick={() => onNavigate("dashboard")}>Dashboard</span>
       </nav>
     </header>
   );
 });
 
-const HeroSection = memo(function HeroSection() {
+const HeroSection = memo(function HeroSection({
+  onViewAlerts,
+}: {
+  onViewAlerts: () => void;
+}) {
   return (
-    <section className="hero">
+    <section className="hero" id="home">
       <div className="hero-content">
         <p className="hero-badge">
           UTTARAKHAND FLOOD SAFETY SYSTEM
@@ -77,7 +86,7 @@ const HeroSection = memo(function HeroSection() {
             Find Safe Route
           </button>
 
-          <button className="secondary-btn">
+          <button className="secondary-btn" onClick={onViewAlerts}>
             View Alerts
           </button>
         </div>
@@ -88,7 +97,7 @@ const HeroSection = memo(function HeroSection() {
 
 const MapSection = memo(function MapSection() {
   return (
-    <section className="map-section">
+    <section className="map-section" id="map">
       <div className="section-heading">
         <div>
           <p className="small-heading">
@@ -136,8 +145,10 @@ const MapSection = memo(function MapSection() {
 });
 
 const AlertsSection = memo(function AlertsSection() {
+  const [showAllAlerts, setShowAllAlerts] = useState(false);
+
   return (
-    <section className="alerts">
+    <section className="alerts" id="alerts">
       <div className="alert-heading">
         <div>
           <p className="small-heading">
@@ -149,11 +160,15 @@ const AlertsSection = memo(function AlertsSection() {
           </h2>
         </div>
 
-        <button className="view-all">
-          View All
+        <button
+          className="view-all"
+          onClick={() => setShowAllAlerts((prev) => !prev)}
+        >
+          {showAllAlerts ? "Show Less" : "View All"}
         </button>
       </div>
 
+      {/* HIGH ALERT */}
       <div className="alert high-alert">
         <div className="alert-icon">
           ⚠️
@@ -165,7 +180,8 @@ const AlertsSection = memo(function AlertsSection() {
           </h3>
 
           <p>
-            Heavy rainfall reported in Chamoli district.
+            Monitor official flood and rainfall alerts
+            for affected areas.
           </p>
         </div>
 
@@ -174,6 +190,7 @@ const AlertsSection = memo(function AlertsSection() {
         </span>
       </div>
 
+      {/* MODERATE ALERT */}
       <div className="alert moderate-alert">
         <div className="alert-icon">
           🌊
@@ -181,11 +198,12 @@ const AlertsSection = memo(function AlertsSection() {
 
         <div>
           <h3>
-            Water Level Rising
+            River Monitoring
           </h3>
 
           <p>
-            Increased water level detected near Rudraprayag.
+            Check local river conditions before travelling
+            through flood-prone routes.
           </p>
         </div>
 
@@ -193,6 +211,50 @@ const AlertsSection = memo(function AlertsSection() {
           MODERATE
         </span>
       </div>
+
+      {showAllAlerts && (
+        <>
+          <div className="alert moderate-alert" style={{ marginTop: "12px" }}>
+            <div className="alert-icon">
+              🏔️
+            </div>
+
+            <div>
+              <h3>
+                Landslide Advisory
+              </h3>
+
+              <p>
+                Prone slopes along Rishikesh-Badrinath & Kedarnath highways under active watch.
+              </p>
+            </div>
+
+            <span className="moderate-label">
+              ADVISORY
+            </span>
+          </div>
+
+          <div className="alert high-alert" style={{ marginTop: "12px" }}>
+            <div className="alert-icon">
+              🚨
+            </div>
+
+            <div>
+              <h3>
+                Dam Water Release Notice
+              </h3>
+
+              <p>
+                Controlled discharge scheduled at Tehri Dam reservoir. Downstream riverbanks alerted.
+              </p>
+            </div>
+
+            <span className="high-label">
+              NOTICE
+            </span>
+          </div>
+        </>
+      )}
     </section>
   );
 });
@@ -246,6 +308,13 @@ function App() {
     setContacts(updatedContacts);
   }, []);
 
+  const handleNavigate = useCallback((sectionId: string) => {
+    const el = document.getElementById(sectionId);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, []);
+
   if (!loggedIn || !userData) {
     return (
       <LoginPage
@@ -281,22 +350,25 @@ function App() {
         <Navbar
           contactsCount={contacts.length}
           onOpenContacts={handleOpenContacts}
+          onNavigate={handleNavigate}
         />
 
         {/* HERO */}
-        <HeroSection />
+        <HeroSection onViewAlerts={() => handleNavigate("alerts")} />
 
         {/* MAP SECTION */}
         <MapSection />
 
-        {/* LIVE USER LOCATION STATS */}
-        <LocationStats
-          user={{
-            place: userData.place,
-            latitude: userData.latitude || 0,
-            longitude: userData.longitude || 0,
-          }}
-        />
+        {/* LIVE USER LOCATION STATS / DASHBOARD */}
+        <div id="dashboard">
+          <LocationStats
+            user={{
+              place: userData.place,
+              latitude: userData.latitude || 0,
+              longitude: userData.longitude || 0,
+            }}
+          />
+        </div>
 
         {/* ALERTS */}
         <AlertsSection />
