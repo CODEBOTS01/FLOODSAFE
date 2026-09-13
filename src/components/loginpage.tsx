@@ -1,17 +1,38 @@
-import { useState } from "react";
+import { useState, memo } from "react";
+import type { UserData } from "../types/user";
 
 type LoginPageProps = {
-  onLogin: () => void;
+  onLogin: (data: UserData) => void;
 };
 
-function LoginPage({ onLogin }: LoginPageProps) {
-  const [formData, setFormData] = useState({
+const LoginPage = memo(function LoginPage({ onLogin }: LoginPageProps) {
+  const [formData, setFormData] = useState<UserData>({
     name: "",
     mobile: "",
     relativeMobile: "",
     place: "",
     email: ""
   });
+  const [error, setError] = useState<string | null>(null);
+
+  const [mobileError, setMobileError] = useState<string | null>(null);
+  const [relativeMobileError, setRelativeMobileError] = useState<string | null>(null);
+
+  const handleMobileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Keep only numbers
+    const cleanVal = e.target.value.replace(/\D/g, "");
+    setFormData((prev) => ({ ...prev, mobile: cleanVal }));
+    setMobileError(null);
+    if (error) setError(null);
+  };
+
+  const handleRelativeMobileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Keep only numbers
+    const cleanVal = e.target.value.replace(/\D/g, "");
+    setFormData((prev) => ({ ...prev, relativeMobile: cleanVal }));
+    setRelativeMobileError(null);
+    if (error) setError(null);
+  };
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -22,16 +43,37 @@ function LoginPage({ onLogin }: LoginPageProps) {
       ...formData,
       [name]: value
     });
+    if (error) setError(null);
   };
 
   const handleSubmit = (
     e: React.FormEvent<HTMLFormElement>
   ) => {
     e.preventDefault();
+    setMobileError(null);
+    setRelativeMobileError(null);
+    setError(null);
+
+    const mobile = formData.mobile.trim();
+    const relative = formData.relativeMobile.trim();
+
+    if (mobile.length < 10) {
+      setMobileError("Please enter a valid 10-digit mobile number (digits only).");
+      return;
+    }
+
+    if (relative.length < 10) {
+      setRelativeMobileError("Please enter a valid 10-digit mobile number (digits only).");
+      return;
+    }
+
+    if (mobile === relative) {
+      setRelativeMobileError("Emergency contact number cannot be the same as your own mobile number.");
+      return;
+    }
 
     console.log("User Data:", formData);
-
-    onLogin();
+    onLogin(formData);
   };
 
   return (
@@ -199,31 +241,43 @@ function LoginPage({ onLogin }: LoginPageProps) {
                 <input
                   type="tel"
                   name="mobile"
-                  placeholder="Enter your mobile number"
+                  placeholder="10-digit mobile number"
                   value={formData.mobile}
-                  onChange={handleChange}
+                  onChange={handleMobileChange}
                   pattern="[0-9]{10}"
                   maxLength={10}
+                  title="Please enter exactly 10 digits (numbers only)"
                   required
                 />
+                {mobileError && (
+                  <span style={{ color: "#ef4444", fontSize: "12px", marginTop: "4px" }}>
+                    ⚠️ {mobileError}
+                  </span>
+                )}
               </div>
 
 
               <div className="input-group">
                 <label>
-                  Close Relative's Mobile Number
+                  Close Relative's Mobile Number (Primary Emergency Contact)
                 </label>
 
                 <input
                   type="tel"
                   name="relativeMobile"
-                  placeholder="Emergency contact number"
+                  placeholder="10-digit emergency contact number"
                   value={formData.relativeMobile}
-                  onChange={handleChange}
+                  onChange={handleRelativeMobileChange}
                   pattern="[0-9]{10}"
                   maxLength={10}
+                  title="Please enter exactly 10 digits (numbers only)"
                   required
                 />
+                {relativeMobileError && (
+                  <span style={{ color: "#ef4444", fontSize: "12px", marginTop: "4px" }}>
+                    ⚠️ {relativeMobileError}
+                  </span>
+                )}
               </div>
 
 
@@ -259,6 +313,12 @@ function LoginPage({ onLogin }: LoginPageProps) {
               </div>
 
 
+              {error && (
+                <div style={{ color: "#ef4444", fontSize: "13px", marginTop: "8px", fontWeight: "bold" }}>
+                  ⚠️ {error}
+                </div>
+              )}
+
               <button
                 type="submit"
                 className="login-button"
@@ -280,6 +340,6 @@ function LoginPage({ onLogin }: LoginPageProps) {
       </div>
     </div>
   );
-}
+});
 
 export default LoginPage;
