@@ -17,23 +17,39 @@ const FloodMap = lazy(() => import("./components/FloodMap"));
 const Navbar = memo(function Navbar({
   contactsCount,
   onOpenContacts,
-  onNavigate,
 }: {
   contactsCount: number;
   onOpenContacts: () => void;
-  onNavigate: (sectionId: string) => void;
 }) {
   return (
     <header className="navbar">
       <h2>FLOODSAFE</h2>
 
       <nav>
-        <span onClick={() => onNavigate("home")}>Home</span>
-        <span onClick={() => onNavigate("map")}>Map</span>
-        <span onClick={() => onNavigate("alerts")}>
-          Alerts
-          <span className="alert-badge">2</span>
+        <span
+          onClick={() => {
+            window.scrollTo({ top: 0, behavior: "smooth" });
+          }}
+        >
+          Home
         </span>
+
+        <span
+          onClick={() => {
+            document.querySelector(".map-section")?.scrollIntoView({ behavior: "smooth" });
+          }}
+        >
+          Map
+        </span>
+
+        <span
+          onClick={() => {
+            document.querySelector(".alerts")?.scrollIntoView({ behavior: "smooth" });
+          }}
+        >
+          Alerts
+        </span>
+
         <span
           onClick={onOpenContacts}
           style={{
@@ -48,19 +64,27 @@ const Navbar = memo(function Navbar({
         >
           📞 Contacts ({contactsCount})
         </span>
-        <span onClick={() => onNavigate("dashboard")}>Dashboard</span>
+
+        <a
+          href="https://floodsafe-u207.onrender.com/app"
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            color: "inherit",
+            textDecoration: "none",
+            cursor: "pointer"
+          }}
+        >
+          Dashboard
+        </a>
       </nav>
     </header>
   );
 });
 
-const HeroSection = memo(function HeroSection({
-  onViewAlerts,
-}: {
-  onViewAlerts: () => void;
-}) {
+const HeroSection = memo(function HeroSection() {
   return (
-    <section className="hero" id="home">
+    <section className="hero">
       <div className="hero-content">
         <p className="hero-badge">
           UTTARAKHAND FLOOD SAFETY SYSTEM
@@ -76,6 +100,7 @@ const HeroSection = memo(function HeroSection({
         </p>
 
         <div className="hero-buttons">
+          {/* SAFE ROUTE */}
           <button
             className="primary-btn"
             onClick={() => {
@@ -86,7 +111,13 @@ const HeroSection = memo(function HeroSection({
             Find Safe Route
           </button>
 
-          <button className="secondary-btn" onClick={onViewAlerts}>
+          {/* ALERT BUTTON */}
+          <button
+            className="secondary-btn"
+            onClick={() => {
+              document.querySelector(".alerts")?.scrollIntoView({ behavior: "smooth" });
+            }}
+          >
             View Alerts
           </button>
         </div>
@@ -97,7 +128,7 @@ const HeroSection = memo(function HeroSection({
 
 const MapSection = memo(function MapSection() {
   return (
-    <section className="map-section" id="map">
+    <section className="map-section">
       <div className="section-heading">
         <div>
           <p className="small-heading">
@@ -145,10 +176,8 @@ const MapSection = memo(function MapSection() {
 });
 
 const AlertsSection = memo(function AlertsSection() {
-  const [showAllAlerts, setShowAllAlerts] = useState(false);
-
   return (
-    <section className="alerts" id="alerts">
+    <section className="alerts">
       <div className="alert-heading">
         <div>
           <p className="small-heading">
@@ -160,15 +189,14 @@ const AlertsSection = memo(function AlertsSection() {
           </h2>
         </div>
 
-        <button
-          className="view-all"
-          onClick={() => setShowAllAlerts((prev) => !prev)}
-        >
-          {showAllAlerts ? "Show Less" : "View All"}
+        <button className="view-all">
+          View All
         </button>
       </div>
 
-      {/* HIGH ALERT */}
+      {/* ========================================
+          HIGH ALERT
+      ======================================== */}
       <div className="alert high-alert">
         <div className="alert-icon">
           ⚠️
@@ -190,7 +218,9 @@ const AlertsSection = memo(function AlertsSection() {
         </span>
       </div>
 
-      {/* MODERATE ALERT */}
+      {/* ========================================
+          MODERATE ALERT
+      ======================================== */}
       <div className="alert moderate-alert">
         <div className="alert-icon">
           🌊
@@ -211,50 +241,6 @@ const AlertsSection = memo(function AlertsSection() {
           MODERATE
         </span>
       </div>
-
-      {showAllAlerts && (
-        <>
-          <div className="alert moderate-alert" style={{ marginTop: "12px" }}>
-            <div className="alert-icon">
-              🏔️
-            </div>
-
-            <div>
-              <h3>
-                Landslide Advisory
-              </h3>
-
-              <p>
-                Prone slopes along Rishikesh-Badrinath & Kedarnath highways under active watch.
-              </p>
-            </div>
-
-            <span className="moderate-label">
-              ADVISORY
-            </span>
-          </div>
-
-          <div className="alert high-alert" style={{ marginTop: "12px" }}>
-            <div className="alert-icon">
-              🚨
-            </div>
-
-            <div>
-              <h3>
-                Dam Water Release Notice
-              </h3>
-
-              <p>
-                Controlled discharge scheduled at Tehri Dam reservoir. Downstream riverbanks alerted.
-              </p>
-            </div>
-
-            <span className="high-label">
-              NOTICE
-            </span>
-          </div>
-        </>
-      )}
     </section>
   );
 });
@@ -308,13 +294,6 @@ function App() {
     setContacts(updatedContacts);
   }, []);
 
-  const handleNavigate = useCallback((sectionId: string) => {
-    const el = document.getElementById(sectionId);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }, []);
-
   if (!loggedIn || !userData) {
     return (
       <LoginPage
@@ -350,25 +329,22 @@ function App() {
         <Navbar
           contactsCount={contacts.length}
           onOpenContacts={handleOpenContacts}
-          onNavigate={handleNavigate}
         />
 
         {/* HERO */}
-        <HeroSection onViewAlerts={() => handleNavigate("alerts")} />
+        <HeroSection />
 
         {/* MAP SECTION */}
         <MapSection />
 
-        {/* LIVE USER LOCATION STATS / DASHBOARD */}
-        <div id="dashboard">
-          <LocationStats
-            user={{
-              place: userData.place,
-              latitude: userData.latitude || 0,
-              longitude: userData.longitude || 0,
-            }}
-          />
-        </div>
+        {/* LIVE USER LOCATION STATS */}
+        <LocationStats
+          user={{
+            place: userData.place,
+            latitude: userData.latitude || 0,
+            longitude: userData.longitude || 0,
+          }}
+        />
 
         {/* ALERTS */}
         <AlertsSection />
