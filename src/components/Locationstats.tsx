@@ -268,74 +268,32 @@ function LocationStats({
 
 
       try {
+        // Try backend proxy first, fallback to Overpass public
+        let data: any = null;
+        try {
+          const res = await fetch(`/api/shelters?lat=${lat}&lon=${lon}`);
+          if (res.ok) {
+            data = await res.json();
+          }
+        } catch {
+          // fallback
+        }
 
-        /*
-          Search within 20 KM.
+        if (!data || !Array.isArray(data.elements)) {
+          const overpassQuery = `[out:json][timeout:10];(nwr["amenity"="social_facility"]["social_facility"="shelter"](around:20000,${lat},${lon});nwr["emergency:social_facility"="shelter"](around:20000,${lat},${lon});nwr["evacuation_center"="yes"](around:20000,${lat},${lon}););out center;`;
+          const overpassURL = "https://overpass-api.de/api/interpreter?data=" + encodeURIComponent(overpassQuery);
+          const response = await fetch(overpassURL);
+          if (response.ok) {
+            const text = await response.text();
+            if (text.startsWith("{")) {
+              data = JSON.parse(text);
+            }
+          }
+        }
 
-          We search specifically for
-          social/emergency shelters,
-          not ordinary bus shelters.
-        */
-
-        const overpassQuery = `
-
-          [out:json][timeout:20];
-
-          (
-
-            nwr
-              ["amenity"="social_facility"]
-              ["social_facility"="shelter"]
-              (around:20000,${lat},${lon});
-
-            nwr
-              ["emergency:social_facility"="shelter"]
-              (around:20000,${lat},${lon});
-
-            nwr
-              ["evacuation_center"="yes"]
-              (around:20000,${lat},${lon});
-
-          );
-
-          out center;
-
-        `;
-
-
-        const overpassURL =
-
-          "https://overpass-api.de/api/interpreter" +
-
-          "?data=" +
-
-          encodeURIComponent(
-            overpassQuery
-          );
-
-
-        const response =
-          await fetch(
-            overpassURL
-          );
-
-
-        const data =
-          await response.json();
-
-
-        shelters =
-          data.elements
-            ?.length ?? 0;
-
-
+        shelters = data?.elements?.length ?? 0;
       } catch (error) {
-
-        console.error(
-          "Shelter API error:",
-          error
-        );
-
+        shelters = 0;
       }
 
 
@@ -348,32 +306,16 @@ function LocationStats({
 
 
       try {
-
-        const response =
-          await fetch(
-
-            "https://sachet.ndma.gov.in/cap_public_website/FetchAllAlertDetails"
-
-          );
-
-
-        if (!response.ok) {
-
-          throw new Error(
-            "SACHET request failed"
-          );
-
+        let alertArray: any[] = [];
+        try {
+          const response = await fetch("/api/alerts/sachet");
+          if (response.ok) {
+            const data = await response.json();
+            if (Array.isArray(data)) alertArray = data;
+          }
+        } catch {
+          // If backend proxy unreachable, alertArray remains []
         }
-
-
-        const data =
-          await response.json();
-
-
-        const alertArray =
-          Array.isArray(data)
-            ? data
-            : [];
 
 
         /*
