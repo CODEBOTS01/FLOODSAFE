@@ -4,7 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "concurrently --names \"SOS,VITE\" --prefix-colors \"red,cyan\" \"npm run server\" \"npm run vite\"",
+    "vite": "vite",
+    "server": "node backend/server.js",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview"

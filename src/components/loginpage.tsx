@@ -1,19 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
+import type { UserData } from "../types/user";
 
 
 /* ========================================
    TYPES
 ======================================== */
-
-type UserData = {
-  name: string;
-  mobile: string;
-  place: string;
-  email: string;
-  latitude: number;
-  longitude: number;
-};
-
 
 type LoginPageProps = {
   onLogin: (data: UserData) => void;
@@ -32,7 +23,7 @@ type LocationSuggestion = {
    LOGIN PAGE
 ======================================== */
 
-function LoginPage({ onLogin }: LoginPageProps) {
+const LoginPage = memo(function LoginPage({ onLogin }: LoginPageProps) {
 
   /* ========================================
      FORM DATA
@@ -42,11 +33,30 @@ function LoginPage({ onLogin }: LoginPageProps) {
     useState<UserData>({
       name: "",
       mobile: "",
+      relativeMobile: "",
       place: "",
       email: "",
       latitude: 0,
       longitude: 0
     });
+
+  const [error, setError] = useState<string | null>(null);
+  const [mobileError, setMobileError] = useState<string | null>(null);
+  const [relativeMobileError, setRelativeMobileError] = useState<string | null>(null);
+
+  const handleMobileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const cleanVal = e.target.value.replace(/\D/g, "");
+    setFormData((prev) => ({ ...prev, mobile: cleanVal }));
+    setMobileError(null);
+    if (error) setError(null);
+  };
+
+  const handleRelativeMobileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const cleanVal = e.target.value.replace(/\D/g, "");
+    setFormData((prev) => ({ ...prev, relativeMobile: cleanVal }));
+    setRelativeMobileError(null);
+    if (error) setError(null);
+  };
 
 
   /* ========================================
@@ -127,7 +137,7 @@ function LoginPage({ onLogin }: LoginPageProps) {
       ...previousData,
       [name]: value
     }));
-
+    if (error) setError(null);
   };
 
 
@@ -782,20 +792,30 @@ function LoginPage({ onLogin }: LoginPageProps) {
   ) => {
 
     e.preventDefault();
+    setMobileError(null);
+    setRelativeMobileError(null);
+    setError(null);
 
+    const mobile = formData.mobile.trim();
+    const relative = formData.relativeMobile.trim();
 
-    /*
-      Send complete user data to App.tsx
-    */
+    if (mobile.length < 10) {
+      setMobileError("Please enter a valid 10-digit mobile number (digits only).");
+      return;
+    }
 
+    if (relative.length < 10) {
+      setRelativeMobileError("Please enter a valid 10-digit mobile number (digits only).");
+      return;
+    }
+
+    if (mobile === relative) {
+      setRelativeMobileError("Emergency contact number cannot be the same as your own mobile number.");
+      return;
+    }
+
+    console.log("FLOODSAFE User Data:", formData);
     onLogin(formData);
-
-
-    console.log(
-      "FLOODSAFE User Data:",
-      formData
-    );
-
   };
 
 
@@ -1132,32 +1152,49 @@ function LoginPage({ onLogin }: LoginPageProps) {
 
 
                 <input
-
                   type="tel"
-
                   name="mobile"
-
-                  placeholder="Enter your 10-digit mobile number"
-
-                  value={
-                    formData.mobile
-                  }
-
-                  onChange={
-                    handleChange
-                  }
-
+                  placeholder="10-digit mobile number"
+                  value={formData.mobile}
+                  onChange={handleMobileChange}
                   pattern="[0-9]{10}"
-
                   maxLength={10}
-
+                  title="Please enter exactly 10 digits (numbers only)"
                   required
-
                 />
-
+                {mobileError && (
+                  <span style={{ color: "#ef4444", fontSize: "12px", marginTop: "4px", display: "block" }}>
+                    ⚠️ {mobileError}
+                  </span>
+                )}
               </div>
 
 
+              {/* ========================================
+                  CLOSE RELATIVE / PRIMARY EMERGENCY CONTACT
+              ======================================== */}
+              <div className="input-group">
+                <label>
+                  Close Relative's Mobile Number (Primary Emergency Contact)
+                </label>
+
+                <input
+                  type="tel"
+                  name="relativeMobile"
+                  placeholder="10-digit emergency contact number"
+                  value={formData.relativeMobile}
+                  onChange={handleRelativeMobileChange}
+                  pattern="[0-9]{10}"
+                  maxLength={10}
+                  title="Please enter exactly 10 digits (numbers only)"
+                  required
+                />
+                {relativeMobileError && (
+                  <span style={{ color: "#ef4444", fontSize: "12px", marginTop: "4px", display: "block" }}>
+                    ⚠️ {relativeMobileError}
+                  </span>
+                )}
+              </div>
 
               {/* ========================================
                   CURRENT LOCATION
@@ -1458,11 +1495,15 @@ function LoginPage({ onLogin }: LoginPageProps) {
               </div>
 
 
+              {error && (
+                <div style={{ color: "#ef4444", fontSize: "13px", marginTop: "8px", marginBottom: "8px", fontWeight: "bold" }}>
+                  ⚠️ {error}
+                </div>
+              )}
 
               {/* ========================================
                   CONTINUE BUTTON
               ======================================== */}
-
               <button
 
                 type="submit"
@@ -1499,8 +1540,6 @@ function LoginPage({ onLogin }: LoginPageProps) {
     </div>
 
   );
-
-}
-
+});
 
 export default LoginPage;

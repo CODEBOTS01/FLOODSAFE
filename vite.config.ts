@@ -6,11 +6,17 @@ export default defineConfig({
 
   server: {
     host: "0.0.0.0",
-
-    allowedHosts: true
+    allowedHosts: true,
+    // Proxy /api requests to the SOS Express backend during development.
+    proxy: {
+      "/api": {
+        target: "http://localhost:3001",
+        changeOrigin: true,
+      },
+    },
   },
 
   optimizeDeps: {
-    exclude: ["maplibre-gl"]
-  }
+    exclude: ["maplibre-gl"],
+  },
 });
