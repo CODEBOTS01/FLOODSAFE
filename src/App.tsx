@@ -66,7 +66,7 @@ const Navbar = memo(function Navbar({
         </span>
 
         <a
-          href="https://floodsafe-u207.onrender.com/app"
+          href="https://floodsafe-u207.onrender.com/"
           target="_blank"
           rel="noopener noreferrer"
           style={{
