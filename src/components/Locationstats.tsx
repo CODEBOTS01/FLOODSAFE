@@ -4,6 +4,10 @@ import {
 } from "react";
 
 
+/* ========================================
+   TYPES
+======================================== */
+
 type UserLocation = {
   place: string;
   latitude: number;
@@ -24,6 +28,10 @@ type StatsData = {
 };
 
 
+/* ========================================
+   LOCATION STATS COMPONENT
+======================================== */
+
 function LocationStats({
   user
 }: LocationStatsProps) {
@@ -41,9 +49,9 @@ function LocationStats({
     useState(true);
 
 
-  /* =====================================
+  /* ========================================
      DISTANCE BETWEEN TWO COORDINATES
-  ====================================== */
+  ======================================== */
 
   const getDistance = (
     lat1: number,
@@ -54,16 +62,19 @@ function LocationStats({
 
     const R = 6371;
 
+
     const dLat =
       ((lat2 - lat1) * Math.PI) / 180;
+
 
     const dLon =
       ((lon2 - lon1) * Math.PI) / 180;
 
 
     const a =
+
       Math.sin(dLat / 2) *
-        Math.sin(dLat / 2) +
+      Math.sin(dLat / 2) +
 
       Math.cos(
         (lat1 * Math.PI) / 180
@@ -74,7 +85,7 @@ function LocationStats({
       ) *
 
       Math.sin(dLon / 2) *
-        Math.sin(dLon / 2);
+      Math.sin(dLon / 2);
 
 
     const c =
@@ -89,9 +100,9 @@ function LocationStats({
   };
 
 
-  /* =====================================
+  /* ========================================
      LOAD LIVE LOCATION DATA
-  ====================================== */
+  ======================================== */
 
   useEffect(() => {
 
@@ -99,6 +110,9 @@ function LocationStats({
       !user.latitude ||
       !user.longitude
     ) {
+
+      setLoading(false);
+
       return;
     }
 
@@ -111,13 +125,16 @@ function LocationStats({
       const lat =
         user.latitude;
 
+
       const lon =
         user.longitude;
 
 
-      /* =====================================
-         1. RAINFALL - OPEN METEO
-      ====================================== */
+
+      /* ========================================
+         1. RAINFALL
+         OPEN-METEO
+      ======================================== */
 
       let rainfall:
         number | null = null;
@@ -141,7 +158,18 @@ function LocationStats({
 
 
         const response =
-          await fetch(weatherURL);
+          await fetch(
+            weatherURL
+          );
+
+
+        if (!response.ok) {
+
+          throw new Error(
+            `Weather API failed: ${response.status}`
+          );
+
+        }
 
 
         const data =
@@ -150,18 +178,10 @@ function LocationStats({
 
         const rainfallValues:
           number[] =
+
           data.hourly
             ?.precipitation || [];
 
-
-        /*
-          past_hours=24 gives us
-          approximately the previous
-          24 hourly values.
-
-          Ignore the final forecast
-          value.
-        */
 
         const previous24Hours =
           rainfallValues.slice(
@@ -170,22 +190,26 @@ function LocationStats({
           );
 
 
-        rainfall =
+        const totalRainfall =
           previous24Hours.reduce(
             (
               total,
               value
-            ) =>
-              total +
-              (value || 0),
+            ) => {
 
+              return (
+                total +
+                (value || 0)
+              );
+
+            },
             0
           );
 
 
         rainfall =
           Number(
-            rainfall.toFixed(1)
+            totalRainfall.toFixed(1)
           );
 
 
@@ -199,9 +223,11 @@ function LocationStats({
       }
 
 
-      /* =====================================
-         2. RIVER DISCHARGE - GLOFAS
-      ====================================== */
+
+      /* ========================================
+         2. RIVER DISCHARGE
+         OPEN-METEO GLOFAS
+      ======================================== */
 
       let discharge:
         number | null = null;
@@ -223,7 +249,18 @@ function LocationStats({
 
 
         const response =
-          await fetch(floodURL);
+          await fetch(
+            floodURL
+          );
+
+
+        if (!response.ok) {
+
+          throw new Error(
+            `Flood API failed: ${response.status}`
+          );
+
+        }
 
 
         const data =
@@ -248,6 +285,7 @@ function LocationStats({
 
         }
 
+
       } catch (error) {
 
         console.error(
@@ -258,10 +296,11 @@ function LocationStats({
       }
 
 
-      /* =====================================
+
+      /* ========================================
          3. NEARBY EMERGENCY SHELTERS
-            OPENSTREETMAP
-      ====================================== */
+         OPENSTREETMAP OVERPASS
+      ======================================== */
 
       let shelters:
         number | null = null;
@@ -270,78 +309,245 @@ function LocationStats({
       try {
 
         /*
-          Search within 20 KM.
+          Search 15 km around
+          the selected location.
 
-          We search specifically for
-          social/emergency shelters,
-          not ordinary bus shelters.
+          We only ask for the COUNT,
+          not full map geometry.
         */
 
         const overpassQuery = `
 
-          [out:json][timeout:20];
+          [out:json][timeout:25];
 
           (
 
             nwr
               ["amenity"="social_facility"]
               ["social_facility"="shelter"]
-              (around:20000,${lat},${lon});
+              (around:15000,${lat},${lon});
 
             nwr
               ["emergency:social_facility"="shelter"]
-              (around:20000,${lat},${lon});
+              (around:15000,${lat},${lon});
 
             nwr
               ["evacuation_center"="yes"]
-              (around:20000,${lat},${lon});
+              (around:15000,${lat},${lon});
 
           );
 
-          out center;
+          out count;
 
         `;
 
 
-        const overpassURL =
+        /*
+          If one public server is slow,
+          automatically try another.
+        */
 
-          "https://overpass-api.de/api/interpreter" +
+        const overpassServers = [
 
-          "?data=" +
+          "https://overpass-api.de/api/interpreter",
 
-          encodeURIComponent(
-            overpassQuery
-          );
+          "https://overpass.kumi.systems/api/interpreter"
 
-
-        const response =
-          await fetch(
-            overpassURL
-          );
+        ];
 
 
-        const data =
-          await response.json();
+        for (
+          const server
+          of overpassServers
+        ) {
+
+          try {
+
+            const controller =
+              new AbortController();
 
 
-        shelters =
-          data.elements
-            ?.length ?? 0;
+            /*
+              Stop waiting after
+              30 seconds.
+            */
+
+            const timeout =
+              setTimeout(
+                () => {
+
+                  controller.abort();
+
+                },
+                30000
+              );
+
+
+            const response =
+              await fetch(
+                server,
+                {
+
+                  method:
+                    "POST",
+
+                  headers: {
+
+                    "Content-Type":
+                      "application/x-www-form-urlencoded"
+
+                  },
+
+                  body:
+                    "data=" +
+                    encodeURIComponent(
+                      overpassQuery
+                    ),
+
+                  signal:
+                    controller.signal
+
+                }
+              );
+
+
+            clearTimeout(
+              timeout
+            );
+
+
+            if (!response.ok) {
+
+              console.warn(
+                "Overpass server failed:",
+                server,
+                response.status
+              );
+
+              continue;
+
+            }
+
+
+            const contentType =
+              response.headers.get(
+                "content-type"
+              ) || "";
+
+
+            if (
+              !contentType.includes(
+                "json"
+              )
+            ) {
+
+              console.warn(
+                "Overpass returned non-JSON:",
+                server
+              );
+
+              continue;
+
+            }
+
+
+            const data =
+              await response.json();
+
+
+            /*
+              out count returns:
+
+              {
+                elements: [
+                  {
+                    type: "count",
+                    tags: {
+                      total: "4"
+                    }
+                  }
+                ]
+              }
+            */
+
+            const total =
+              data.elements?.[0]
+                ?.tags
+                ?.total;
+
+
+            if (
+              total !== undefined
+            ) {
+
+              shelters =
+                Number(total);
+
+            } else {
+
+              shelters = 0;
+
+            }
+
+
+            console.log(
+              "Mapped shelters:",
+              shelters
+            );
+
+
+            /*
+              Successful server.
+              Stop trying others.
+            */
+
+            break;
+
+
+          } catch (error: any) {
+
+            if (
+              error.name ===
+              "AbortError"
+            ) {
+
+              console.warn(
+                "Overpass server timed out:",
+                server
+              );
+
+            } else {
+
+              console.warn(
+                "Overpass server error:",
+                server,
+                error
+              );
+
+            }
+
+          }
+
+        }
 
 
       } catch (error) {
 
         console.error(
-          "Shelter API error:",
+          "Shelter lookup failed:",
           error
         );
 
       }
 
 
-      /* =====================================
+
+      /* ========================================
          4. OFFICIAL NDMA SACHET ALERTS
-      ====================================== */
+
+         Uses Vite proxy:
+         /api/sachet
+      ======================================== */
 
       let alerts:
         number | null = null;
@@ -351,16 +557,33 @@ function LocationStats({
 
         const response =
           await fetch(
-
-            "https://sachet.ndma.gov.in/cap_public_website/FetchAllAlertDetails"
-
+            "/api/sachet"
           );
 
 
         if (!response.ok) {
 
           throw new Error(
-            "SACHET request failed"
+            `SACHET request failed: ${response.status}`
+          );
+
+        }
+
+
+        const contentType =
+          response.headers.get(
+            "content-type"
+          ) || "";
+
+
+        if (
+          !contentType.includes(
+            "json"
+          )
+        ) {
+
+          throw new Error(
+            "SACHET did not return JSON"
           );
 
         }
@@ -376,56 +599,87 @@ function LocationStats({
             : [];
 
 
-        /*
-          Search area descriptions for
-          the selected city/state and
-          also use the alert centroid
-          when available.
-        */
+        /* ========================================
+           USER LOCATION TERMS
+
+           Example:
+
+           Dehradun, Uttarakhand
+
+           becomes:
+
+           dehradun
+           uttarakhand
+        ======================================== */
 
         const locationTerms =
           user.place
+
             .toLowerCase()
+
             .split(",")
+
             .map(
               (item) =>
                 item.trim()
             )
+
             .filter(
               (item) =>
                 item.length > 2
             );
 
 
+        /* ========================================
+           FILTER RELEVANT ALERTS
+        ======================================== */
+
         const relevantAlerts =
           alertArray.filter(
             (alert: any) => {
 
+
               const alertText =
 
-                `${alert.area_description || ""} ` +
+                (
+                  `${alert.area_description || ""} ` +
 
-                `${alert.warning_message || ""}`
+                  `${alert.warning_message || ""} ` +
+
+                  `${alert.disaster_type || ""}`
+                )
 
                   .toLowerCase();
 
 
+              /*
+                Check text for the
+                selected place.
+              */
+
               const textMatch =
                 locationTerms.some(
                   (location) =>
+
                     alertText.includes(
                       location
                     )
+
                 );
 
 
               if (textMatch) {
+
                 return true;
+
               }
 
 
               /*
-                SACHET centroid format:
+                Also check alert coordinates
+                if centroid is available.
+
+                Expected:
                 longitude,latitude
               */
 
@@ -434,16 +688,22 @@ function LocationStats({
               ) {
 
                 const coordinates =
-                  alert.centroid
+                  String(
+                    alert.centroid
+                  )
+
                     .split(",")
+
                     .map(Number);
 
 
                 if (
                   coordinates.length === 2 &&
+
                   !Number.isNaN(
                     coordinates[0]
                   ) &&
+
                   !Number.isNaN(
                     coordinates[1]
                   )
@@ -452,22 +712,26 @@ function LocationStats({
                   const alertLon =
                     coordinates[0];
 
+
                   const alertLat =
                     coordinates[1];
 
 
                   const distance =
                     getDistance(
+
                       lat,
                       lon,
+
                       alertLat,
                       alertLon
+
                     );
 
 
                   /*
-                    Alert is considered
-                    nearby within 100 KM.
+                    Show alerts within
+                    approximately 100 km.
                   */
 
                   return (
@@ -485,8 +749,55 @@ function LocationStats({
           );
 
 
+        /* ========================================
+           REMOVE DUPLICATES
+        ======================================== */
+
+        const uniqueAlerts =
+          relevantAlerts.filter(
+            (
+              alert: any,
+              index: number,
+              array: any[]
+            ) => {
+
+              const identifier =
+                String(
+                  alert.identifier ||
+                  `${alert.area_description}-${alert.disaster_type}`
+                );
+
+
+              return (
+
+                index ===
+
+                array.findIndex(
+                  (item: any) => {
+
+                    const itemIdentifier =
+                      String(
+                        item.identifier ||
+                        `${item.area_description}-${item.disaster_type}`
+                      );
+
+
+                    return (
+                      itemIdentifier ===
+                      identifier
+                    );
+
+                  }
+                )
+
+              );
+
+            }
+          );
+
+
         alerts =
-          relevantAlerts.length;
+          uniqueAlerts.length;
 
 
       } catch (error) {
@@ -496,20 +807,21 @@ function LocationStats({
           error
         );
 
+
         /*
-          Don't fake an alert number.
-          Keep it null if official
-          service cannot be reached.
+          Do not fake alert data.
         */
 
-        alerts = null;
+        alerts =
+          null;
 
       }
 
 
-      /* =====================================
+
+      /* ========================================
          UPDATE ALL CARDS
-      ====================================== */
+      ======================================== */
 
       setStats({
 
@@ -543,205 +855,294 @@ function LocationStats({
   ]);
 
 
-  /* =====================================
+
+  /* ========================================
      PAGE
-  ====================================== */
+  ======================================== */
 
   return (
 
     <section className="local-stats-section">
 
 
-      {/* LOCATION TITLE */}
+      {/* ========================================
+          LOCATION TITLE
+      ======================================== */}
 
       <div className="stats-location-heading">
 
+
         <div>
 
+
           <p className="small-heading">
+
             LIVE LOCAL CONDITIONS
+
           </p>
 
 
           <h2>
+
             📍 {user.place}
+
           </h2>
 
+
         </div>
+
 
 
         <div className="live-data-badge">
 
+
           <span className="status-dot">
           </span>
 
+
           Live Data
 
+
         </div>
+
 
       </div>
 
 
-      {/* =====================================
-          CARDS
-      ====================================== */}
+
+      {/* ========================================
+          STAT CARDS
+      ======================================== */}
 
       <div className="stats">
 
 
-        {/* RAINFALL */}
+        {/* ========================================
+            RAINFALL
+        ======================================== */}
 
         <div className="card">
 
+
           <div className="card-icon">
+
             🌧️
+
           </div>
 
 
           <div>
 
+
             <p className="card-title">
+
               Rainfall
+
             </p>
 
 
             <h2>
 
-              {loading
-                ? "..."
-                : stats.rainfall !== null
-                ? `${stats.rainfall} mm`
-                : "—"
+              {
+                loading
+
+                  ? "..."
+
+                  : stats.rainfall !== null
+
+                  ? `${stats.rainfall} mm`
+
+                  : "—"
               }
 
             </h2>
 
 
             <p className="card-text">
+
               Previous 24 Hours
+
             </p>
 
+
           </div>
+
 
         </div>
 
 
-        {/* RIVER DISCHARGE */}
+
+        {/* ========================================
+            RIVER DISCHARGE
+        ======================================== */}
 
         <div className="card">
 
+
           <div className="card-icon">
+
             🌊
+
           </div>
 
 
           <div>
 
+
             <p className="card-title">
+
               River Discharge
+
             </p>
 
 
             <h2>
 
-              {loading
-                ? "..."
-                : stats.discharge !== null
-                ? `${stats.discharge} m³/s`
-                : "—"
+              {
+                loading
+
+                  ? "..."
+
+                  : stats.discharge !== null
+
+                  ? `${stats.discharge} m³/s`
+
+                  : "—"
               }
 
             </h2>
 
 
             <p className="card-text">
+
               GloFAS Estimate
+
             </p>
 
+
           </div>
+
 
         </div>
 
 
-        {/* SHELTERS */}
+
+        {/* ========================================
+            SHELTERS
+        ======================================== */}
 
         <div className="card">
 
+
           <div className="card-icon">
+
             🏠
+
           </div>
 
 
           <div>
 
+
             <p className="card-title">
+
               Mapped Shelters
+
             </p>
 
 
             <h2>
 
-              {loading
-                ? "..."
-                : stats.shelters !== null
-                ? stats.shelters
-                : "—"
+              {
+                loading
+
+                  ? "..."
+
+                  : stats.shelters !== null
+
+                  ? stats.shelters
+
+                  : "—"
               }
 
             </h2>
 
 
             <p className="card-text">
-              Within 20 km
+
+              Within 15 km
+
             </p>
 
+
           </div>
+
 
         </div>
 
 
-        {/* ALERTS */}
+
+        {/* ========================================
+            OFFICIAL ALERTS
+        ======================================== */}
 
         <div className="card">
 
+
           <div className="card-icon">
+
             ⚠️
+
           </div>
 
 
           <div>
 
+
             <p className="card-title">
+
               Official Alerts
+
             </p>
 
 
             <h2>
 
-              {loading
-                ? "..."
-                : stats.alerts !== null
-                ? stats.alerts
-                : "—"
+              {
+                loading
+
+                  ? "..."
+
+                  : stats.alerts !== null
+
+                  ? stats.alerts
+
+                  : "—"
               }
 
             </h2>
 
 
             <p className="card-text">
+
               NDMA SACHET
+
             </p>
 
+
           </div>
+
 
         </div>
 
 
       </div>
 
+
     </section>
 
   );
+
 }
 
 

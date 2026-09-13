@@ -3,6 +3,7 @@ import { useState } from "react";
 import FloodMap from "./components/FloodMap";
 import LoginPage from "./components/loginpage";
 import LocationStats from "./components/Locationstats";
+import OfficialAlerts from "./components/OfficialAlerts";
 
 import "./App.css";
 
@@ -24,7 +25,7 @@ type UserData = {
 function App() {
 
   /* ========================================
-     STORE LOGGED-IN USER + LOCATION
+     STORE USER + LOCATION
   ======================================== */
 
   const [userData, setUserData] =
@@ -91,21 +92,85 @@ function App() {
 
           <nav>
 
-            <span>
+
+            {/* HOME */}
+
+            <span
+              onClick={() => {
+
+                window.scrollTo({
+                  top: 0,
+                  behavior: "smooth"
+                });
+
+              }}
+            >
+
               Home
+
             </span>
 
-            <span>
+
+
+            {/* MAP */}
+
+            <span
+              onClick={() => {
+
+                document
+                  .getElementById("flood-map")
+                  ?.scrollIntoView({
+                    behavior: "smooth"
+                  });
+
+              }}
+            >
+
               Map
+
             </span>
 
-            <span>
+
+
+            {/* ALERTS */}
+
+            <span
+              onClick={() => {
+
+                document
+                  .getElementById(
+                    "official-alerts"
+                  )
+                  ?.scrollIntoView({
+                    behavior: "smooth"
+                  });
+
+              }}
+            >
+
               Alerts
+
             </span>
 
-            <span>
+
+
+            {/* DASHBOARD */}
+
+            <span
+
+              onClick={() => {
+
+                window.location.href =
+                  "https://floodsafe-u207.onrender.com/";
+
+              }}
+
+            >
+
               Dashboard
+
             </span>
+
 
           </nav>
 
@@ -123,12 +188,16 @@ function App() {
 
 
             <p className="hero-badge">
+
               UTTARAKHAND FLOOD SAFETY SYSTEM
+
             </p>
 
 
             <h1>
+
               Stay Safe During Flood Emergencies
+
             </h1>
 
 
@@ -140,10 +209,13 @@ function App() {
             </p>
 
 
+
             <div className="hero-buttons">
 
 
-              {/* SAFE ROUTE */}
+              {/* ========================================
+                  FIND SAFE ROUTE
+              ======================================== */}
 
               <button
 
@@ -164,10 +236,27 @@ function App() {
 
 
 
-              {/* ALERT BUTTON */}
+              {/* ========================================
+                  VIEW ALERTS
+              ======================================== */}
 
-              <button 
-                className="secondary-btn">
+              <button
+
+                className="secondary-btn"
+
+                onClick={() => {
+
+                  document
+                    .getElementById(
+                      "official-alerts"
+                    )
+                    ?.scrollIntoView({
+                      behavior: "smooth"
+                    });
+
+                }}
+
+              >
 
                 View Alerts
 
@@ -186,7 +275,10 @@ function App() {
             FLOOD MAP SECTION
         ======================================== */}
 
-        <section className="map-section">
+        <section
+          className="map-section"
+          id="flood-map"
+        >
 
 
           <div className="section-heading">
@@ -194,14 +286,20 @@ function App() {
 
             <div>
 
+
               <p className="small-heading">
+
                 LIVE RISK MAP
+
               </p>
 
 
               <h2>
+
                 Flood Risk Across Uttarakhand
+
               </h2>
+
 
             </div>
 
@@ -209,10 +307,13 @@ function App() {
 
             <div className="status-badge">
 
+
               <span className="status-dot">
               </span>
 
+
               Monitoring Active
+
 
             </div>
 
@@ -234,17 +335,6 @@ function App() {
 
         {/* ========================================
             LIVE USER LOCATION DATA
-
-            Uses:
-            - User's selected/GPS location
-            - Latitude
-            - Longitude
-
-            LocationStats fetches:
-            Rainfall
-            River discharge
-            Shelters
-            Alerts
         ======================================== */}
 
         <LocationStats
@@ -254,113 +344,21 @@ function App() {
 
 
         {/* ========================================
-            EMERGENCY ALERTS SECTION
+            OFFICIAL EMERGENCY ALERTS
+
+            Fake alerts removed.
+
+            This component uses the
+            user's selected location.
         ======================================== */}
 
-        <section className="alerts">
+        <div id="official-alerts">
 
+          <OfficialAlerts
+            user={userData}
+          />
 
-          <div className="alert-heading">
-
-
-            <div>
-
-              <p className="small-heading">
-                EMERGENCY INFORMATION
-              </p>
-
-
-              <h2>
-                Active Emergency Alerts
-              </h2>
-
-            </div>
-
-
-
-            <button className="view-all">
-
-              View All
-
-            </button>
-
-
-          </div>
-
-
-
-          {/* ========================================
-              HIGH ALERT
-          ======================================== */}
-
-          <div className="alert high-alert">
-
-
-            <div className="alert-icon">
-              ⚠️
-            </div>
-
-
-            <div>
-
-              <h3>
-                Heavy Rainfall Warning
-              </h3>
-
-
-              <p>
-                Monitor official flood and rainfall alerts
-                for affected areas.
-              </p>
-
-            </div>
-
-
-            <span className="high-label">
-              HIGH
-            </span>
-
-
-          </div>
-
-
-
-          {/* ========================================
-              MODERATE ALERT
-          ======================================== */}
-
-          <div className="alert moderate-alert">
-
-
-            <div className="alert-icon">
-              🌊
-            </div>
-
-
-            <div>
-
-              <h3>
-                River Monitoring
-              </h3>
-
-
-              <p>
-                Check local river conditions before travelling
-                through flood-prone routes.
-              </p>
-
-            </div>
-
-
-            <span className="moderate-label">
-              MODERATE
-            </span>
-
-
-          </div>
-
-
-        </section>
+        </div>
 
 
 
@@ -373,21 +371,29 @@ function App() {
 
           <div>
 
+
             <h3>
+
               FLOODSAFE
+
             </h3>
 
 
             <p>
+
               Flood monitoring and safety visualization system.
+
             </p>
+
 
           </div>
 
 
 
           <p>
+
             © 2026 FLOODSAFE
+
           </p>
 
 
