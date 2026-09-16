@@ -4,11 +4,14 @@ const express = require('express');
 const router = express.Router();
 
 const { handleSOS, handleRetry } = require('../controllers/sos.controller');
-const { sosLimiter, retryLimiter } = require('../middleware/rate-limiter');
+const { handleAuthorityAlert } = require('../controllers/authority-alert.controller');
+const { sosLimiter, retryLimiter, authorityAlertLimiter } = require('../middleware/rate-limiter');
 const {
   validateSOSRequest,
   validateRetryRequest,
+  validateAuthorityAlertRequest,
 } = require('../middleware/validator');
+const { requireInternalApiKey } = require('../middleware/internal-auth');
 
 const https = require('https');
 const http = require('http');
@@ -111,5 +114,15 @@ router.post('/sos', sosLimiter, validateSOSRequest, handleSOS);
 
 // POST /api/sos/retry — retry failed contacts for an existing event
 router.post('/sos/retry', retryLimiter, validateRetryRequest, handleRetry);
+
+// POST /api/sos/authority-alert — FFGS pipeline -> district authority SMS.
+// Server-to-server only (see middleware/internal-auth.js), not a user action.
+router.post(
+  '/sos/authority-alert',
+  authorityAlertLimiter,
+  requireInternalApiKey,
+  validateAuthorityAlertRequest,
+  handleAuthorityAlert
+);
 
 module.exports = router;

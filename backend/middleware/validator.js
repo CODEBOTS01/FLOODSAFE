@@ -106,4 +106,38 @@ function validateRetryRequest(req, res, next) {
   next();
 }
 
-module.exports = { validateSOSRequest, validateRetryRequest };
+/**
+ * Validate the body of POST /api/sos/authority-alert.
+ */
+function validateAuthorityAlertRequest(req, res, next) {
+  const { wardName, district, riskLevel, floodProbability, validFor } = req.body;
+
+  if (!wardName || typeof wardName !== 'string' || wardName.length > 200) {
+    return res.status(400).json({ success: false, error: 'Invalid or missing wardName.' });
+  }
+
+  if (district != null && (typeof district !== 'string' || district.length > 200)) {
+    return res.status(400).json({ success: false, error: 'Invalid district.' });
+  }
+
+  if (!['HIGH', 'CRITICAL'].includes(riskLevel)) {
+    return res.status(400).json({ success: false, error: 'riskLevel must be HIGH or CRITICAL.' });
+  }
+
+  if (
+    typeof floodProbability !== 'number' ||
+    !isFinite(floodProbability) ||
+    floodProbability < 0 ||
+    floodProbability > 1
+  ) {
+    return res.status(400).json({ success: false, error: 'floodProbability must be a number between 0 and 1.' });
+  }
+
+  if (!validFor || Number.isNaN(new Date(validFor).getTime())) {
+    return res.status(400).json({ success: false, error: 'Invalid or missing validFor timestamp.' });
+  }
+
+  next();
+}
+
+module.exports = { validateSOSRequest, validateRetryRequest, validateAuthorityAlertRequest };

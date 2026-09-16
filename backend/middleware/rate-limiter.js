@@ -32,4 +32,20 @@ const retryLimiter = rateLimit({
   },
 });
 
-module.exports = { sosLimiter, retryLimiter };
+/**
+ * Authority-alert endpoint — server-to-server (the FFGS pipeline), not a
+ * public user action, so a much higher ceiling is fine; it still exists as
+ * a backstop against a misbehaving/looping caller.
+ */
+const authorityAlertLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    error: 'Too many authority-alert requests. Please wait before trying again.',
+  },
+});
+
+module.exports = { sosLimiter, retryLimiter, authorityAlertLimiter };

@@ -13,6 +13,12 @@ export default defineConfig({
         target: "http://localhost:3001",
         changeOrigin: true,
       },
+      // Proxy /ffgs-api to the Python FastAPI read layer (ml-pipeline/src/api/main.py)
+      "/ffgs-api": {
+        target: "http://localhost:8000",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/ffgs-api/, ""),
+      },
     },
   },
 

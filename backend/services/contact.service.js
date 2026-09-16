@@ -56,9 +56,34 @@ function isTestModeEnabled() {
   return process.env.ENABLE_TEST_MODE === 'true';
 }
 
+/**
+ * Load authority (district-level) contacts for the FFGS -> SOS interface.
+ * Reads AUTHORITY_CONTACT_<DISTRICT> (district name upper-cased, spaces ->
+ * underscores, e.g. AUTHORITY_CONTACT_RUDRAPRAYAG), comma-separated E.164
+ * numbers. No numbers configured yet for any district -- these are meant to
+ * be filled in with real district disaster-management-authority contacts
+ * before this goes live; until then the alert is still logged to the
+ * `alerts` table by src/alerts/authority_sos.py, it just has nowhere to SMS.
+ * @param {string|null} district
+ * @returns {string[]}
+ */
+function getAuthorityContacts(district) {
+  if (!district) return [];
+
+  const key = `AUTHORITY_CONTACT_${district.trim().toUpperCase().replace(/\s+/g, '_')}`;
+  const value = process.env[key];
+  if (!value) return [];
+
+  return value
+    .split(',')
+    .map((v) => v.trim())
+    .filter((v) => isValidE164(v));
+}
+
 module.exports = {
   isValidE164,
   getEmergencyContacts,
   getTestRecipient,
   isTestModeEnabled,
+  getAuthorityContacts,
 };

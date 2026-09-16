@@ -1,0 +1,34 @@
+.rainfall-panel {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 10px;
+  padding: 12px;
+}
+
+.rainfall-panel-legend {
+  display: flex;
+  gap: 16px;
+  font-size: 12px;
+  color: #94a3b8;
+  margin-top: 6px;
+}
+
+.rainfall-panel-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.rainfall-panel-legend .swatch {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.rainfall-panel-empty {
+  color: #64748b;
+  font-size: 13px;
+  padding: 12px 0;
+  text-align: center;
+}

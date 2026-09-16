@@ -1,0 +1,113 @@
+.ward-panel-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(2, 6, 23, 0.55);
+  backdrop-filter: blur(2px);
+  z-index: 1000;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+}
+
+.ward-panel {
+  width: min(420px, 92vw);
+  height: 100%;
+  overflow-y: auto;
+  background: rgba(6, 20, 34, 0.98);
+  border-left: 1px solid rgba(56, 189, 248, 0.25);
+  color: #e2e8f0;
+  padding: 22px 20px 40px;
+  box-shadow: -12px 0 40px rgba(0, 0, 0, 0.45);
+}
+
+.ward-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+
+.ward-panel-header h2 {
+  margin: 0;
+  font-size: 19px;
+  color: #f8fafc;
+  letter-spacing: 0.02em;
+}
+
+.ward-panel-close {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 20px;
+  cursor: pointer;
+  line-height: 1;
+}
+
+.ward-panel-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  margin-bottom: 18px;
+}
+
+.ward-panel-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.ward-panel-stat {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid rgba(148, 163, 184, 0.12);
+  border-radius: 10px;
+  padding: 10px 12px;
+}
+
+.ward-panel-stat .label {
+  display: block;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
+  margin-bottom: 4px;
+}
+
+.ward-panel-stat .value {
+  font-size: 17px;
+  font-weight: 700;
+  color: #f1f5f9;
+}
+
+.ward-panel-section-title {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #38bdf8;
+  margin: 20px 0 8px;
+}
+
+.ward-panel-rainfall-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px dashed rgba(148, 163, 184, 0.15);
+  font-size: 14px;
+}
+
+.ward-panel-note {
+  font-size: 12px;
+  color: #64748b;
+  margin-top: 4px;
+  font-style: italic;
+}
+
+.ward-panel-loading,
+.ward-panel-error {
+  padding: 40px 0;
+  text-align: center;
+  color: #94a3b8;
+}

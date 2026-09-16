@@ -3,6 +3,7 @@ import LoginPage from "./components/loginpage";
 import LocationStats from "./components/Locationstats";
 import SOSButton from "./components/SOSButton";
 import EmergencyContacts from "./components/EmergencyContacts";
+import AlertPanel from "./components/AlertPanel";
 import { toE164, type UserData } from "./types/user";
 import "./App.css";
 
@@ -126,7 +127,7 @@ const HeroSection = memo(function HeroSection() {
   );
 });
 
-const MapSection = memo(function MapSection() {
+const MapSection = memo(function MapSection({ userLocation }: { userLocation?: { lat: number; lon: number } | null }) {
   return (
     <section className="map-section">
       <div className="section-heading">
@@ -168,7 +169,7 @@ const MapSection = memo(function MapSection() {
             </div>
           }
         >
-          <FloodMap />
+          <FloodMap userLocation={userLocation} />
         </Suspense>
       </div>
     </section>
@@ -188,59 +189,10 @@ const AlertsSection = memo(function AlertsSection() {
             Active Emergency Alerts
           </h2>
         </div>
-
-        <button className="view-all">
-          View All
-        </button>
       </div>
 
-      {/* ========================================
-          HIGH ALERT
-      ======================================== */}
-      <div className="alert high-alert">
-        <div className="alert-icon">
-          ⚠️
-        </div>
-
-        <div>
-          <h3>
-            Heavy Rainfall Warning
-          </h3>
-
-          <p>
-            Monitor official flood and rainfall alerts
-            for affected areas.
-          </p>
-        </div>
-
-        <span className="high-label">
-          HIGH
-        </span>
-      </div>
-
-      {/* ========================================
-          MODERATE ALERT
-      ======================================== */}
-      <div className="alert moderate-alert">
-        <div className="alert-icon">
-          🌊
-        </div>
-
-        <div>
-          <h3>
-            River Monitoring
-          </h3>
-
-          <p>
-            Check local river conditions before travelling
-            through flood-prone routes.
-          </p>
-        </div>
-
-        <span className="moderate-label">
-          MODERATE
-        </span>
-      </div>
+      {/* Live HIGH/CRITICAL wards from the FFGS model (ml-pipeline/src/api/main.py /alerts) */}
+      <AlertPanel />
     </section>
   );
 });
@@ -334,8 +286,14 @@ function App() {
         {/* HERO */}
         <HeroSection />
 
-        {/* MAP SECTION */}
-        <MapSection />
+        {/* MAP SECTION — defaults to the ward the user is in, if we have their location */}
+        <MapSection
+          userLocation={
+            userData.latitude && userData.longitude
+              ? { lat: userData.latitude, lon: userData.longitude }
+              : null
+          }
+        />
 
         {/* LIVE USER LOCATION STATS */}
         <LocationStats

@@ -1,70 +1,32 @@
-import { useState, useMemo, useRef, useCallback, memo } from "react";
+import { useState, useMemo, useRef, useCallback, useEffect, memo } from "react";
 import Map, {
   Layer,
   NavigationControl,
   Popup,
   Source
 } from "react-map-gl/maplibre";
-import type { MapLayerMouseEvent, FillLayerSpecification, LineLayerSpecification, SymbolLayerSpecification } from "maplibre-gl";
+import type { MapRef } from "react-map-gl/maplibre";
+import type {
+  MapLayerMouseEvent,
+  FillLayerSpecification,
+  LineLayerSpecification,
+  CircleLayerSpecification,
+} from "maplibre-gl";
 
 import "maplibre-gl/dist/maplibre-gl.css";
-
-/* ==========================
-   STATIC DEMO FLOOD INFO
-========================== */
-
-interface DistrictInfo {
-  floods: number;
-  risk: "Low" | "Moderate" | "High" | "Critical";
-  description: string;
-}
-
-const DISTRICT_DATA: Record<string, DistrictInfo> = {
-  Dehradun: {
-    floods: 3,
-    risk: "Low",
-    description: "Urban flooding may occur during periods of intense rainfall."
-  },
-  Uttarkashi: {
-    floods: 4,
-    risk: "Moderate",
-    description: "Flash floods and heavy rainfall can affect valleys and settlements."
-  },
-  Chamoli: {
-    floods: 6,
-    risk: "High",
-    description: "Mountain district vulnerable to flash floods, landslides and river overflow."
-  },
-  Rudraprayag: {
-    floods: 5,
-    risk: "Critical",
-    description: "Highly sensitive region due to steep terrain and river valleys."
-  },
-  Pithoragarh: {
-    floods: 5,
-    risk: "High",
-    description: "Mountainous terrain increases flash-flood and landslide vulnerability."
-  },
-  Nainital: {
-    floods: 3,
-    risk: "Moderate",
-    description: "Heavy rainfall can create drainage and slope instability problems."
-  },
-  Almora: {
-    floods: 2,
-    risk: "Low",
-    description: "Mountain streams may rise rapidly during intense rainfall."
-  },
-  Haridwar: {
-    floods: 4,
-    risk: "High",
-    description: "Low-lying areas near the Ganga can experience flooding."
-  }
-};
+import {
+  getWardsGeoJSON,
+  getGridGeoJSON,
+  getWatershedsGeoJSON,
+  getIotSensorsGeoJSON,
+  getLandslidesGeoJSON,
+  getNearestWard,
+  type WardFeatureProperties,
+} from "../services/ffgsApiService";
+import WardDetailPanel from "./WardDetailPanel";
 
 /* ==========================
    STATIC MAP STYLES & CONFIG
-   (Allocated once at module level to eliminate MapLibre layer re-evaluation)
 ========================== */
 
 const INITIAL_VIEW_STATE = {
@@ -73,69 +35,68 @@ const INITIAL_VIEW_STATE = {
   zoom: 7
 };
 
-const INTERACTIVE_LAYER_IDS = ["district-risk-fill"];
+// Below this zoom the fine 100-250m grid would be thousands of cells across
+// the whole viewport -- only fetch/render it once the user has zoomed in
+// enough that a bbox query stays small (see MAX_GRID_CELLS_PER_REQUEST server-side).
+const GRID_LAYER_MIN_ZOOM = 12;
 
-const UTTARAKHAND_FILL_PAINT: FillLayerSpecification["paint"] = {
-  "fill-color": "#0ea5e9",
-  "fill-opacity": 0.04
-};
+const INTERACTIVE_LAYER_IDS = ["ward-risk-fill", "grid-risk-fill"];
 
-const UTTARAKHAND_BORDER_PAINT: LineLayerSpecification["paint"] = {
-  "line-color": "#0f172a",
-  "line-width": 3
-};
-
-const DISTRICT_RISK_FILL_PAINT: FillLayerSpecification["paint"] = {
+const WARD_RISK_FILL_PAINT: FillLayerSpecification["paint"] = {
   "fill-color": [
     "match",
-    ["get", "district"],
-    "Dehradun", "#22c55e",
-    "Almora", "#22c55e",
-    "Uttarkashi", "#eab308",
-    "Nainital", "#eab308",
-    "Chamoli", "#f97316",
-    "Pithoragarh", "#f97316",
-    "Haridwar", "#f97316",
-    "Rudraprayag", "#ef4444",
+    ["get", "risk_category"],
+    "LOW", "#22c55e",
+    "MODERATE", "#eab308",
+    "HIGH", "#f97316",
+    "CRITICAL", "#ef4444",
     "#94a3b8"
   ],
-  "fill-opacity": 0.48
+  "fill-opacity": 0.55
 };
 
-const DISTRICT_BORDERS_PAINT: LineLayerSpecification["paint"] = {
-  "line-color": "#334155",
-  "line-width": 1.5
+const WARD_BORDERS_PAINT: LineLayerSpecification["paint"] = {
+  "line-color": "#0f172a",
+  "line-width": 0.6
+};
+
+const GRID_RISK_FILL_PAINT: FillLayerSpecification["paint"] = {
+  "fill-color": [
+    "interpolate", ["linear"], ["coalesce", ["get", "combined_risk"], 0],
+    0, "#22c55e",
+    0.4, "#eab308",
+    0.6, "#f97316",
+    0.8, "#ef4444"
+  ],
+  "fill-opacity": 0.65
 };
 
 const HOVER_GLOW_PAINT: LineLayerSpecification["paint"] = {
   "line-color": "#ffffff",
-  "line-width": 10,
-  "line-opacity": 0.55,
-  "line-blur": 5
+  "line-width": 6,
+  "line-opacity": 0.5,
+  "line-blur": 4
 };
 
-const HOVER_BORDER_PAINT: LineLayerSpecification["paint"] = {
-  "line-color": "#ffffff",
-  "line-width": 5
+const IOT_SENSOR_PAINT: CircleLayerSpecification["paint"] = {
+  "circle-radius": 5,
+  "circle-color": "#38bdf8",
+  "circle-stroke-width": 1.5,
+  "circle-stroke-color": "#0f172a"
 };
 
-const DISTRICT_LABELS_LAYOUT: SymbolLayerSpecification["layout"] = {
-  "text-field": ["get", "district"],
-  "text-size": 12,
-  "text-anchor": "center"
+const LANDSLIDE_PAINT: CircleLayerSpecification["paint"] = {
+  "circle-radius": 5,
+  "circle-color": "#a855f7",
+  "circle-stroke-width": 1.5,
+  "circle-stroke-color": "#0f172a"
 };
 
-const DISTRICT_LABELS_PAINT: SymbolLayerSpecification["paint"] = {
-  "text-color": "#0f172a",
-  "text-halo-color": "#ffffff",
-  "text-halo-width": 2
-};
-
-function getRiskColor(risk?: string): string {
-  if (risk === "Low") return "#22c55e";
-  if (risk === "Moderate") return "#eab308";
-  if (risk === "High") return "#f97316";
-  if (risk === "Critical") return "#ef4444";
+function getRiskColor(risk?: string | null): string {
+  if (risk === "LOW") return "#22c55e";
+  if (risk === "MODERATE") return "#eab308";
+  if (risk === "HIGH") return "#f97316";
+  if (risk === "CRITICAL") return "#ef4444";
   return "#94a3b8";
 }
 
@@ -143,99 +104,181 @@ function getRiskColor(risk?: string): string {
    COMPONENT
 ========================== */
 
-function FloodMapComponent() {
-  const [hoveredDistrict, setHoveredDistrict] = useState<string | null>(null);
+interface FloodMapProps {
+  /** When provided, the map auto-opens the ward containing this point on load (item 3: "default to the ward user is in"). */
+  userLocation?: { lat: number; lon: number } | null;
+}
+
+function FloodMapComponent({ userLocation }: FloodMapProps) {
+  const mapRef = useRef<MapRef | null>(null);
+
+  const [wardsGeoJSON, setWardsGeoJSON] = useState<GeoJSON.FeatureCollection | null>(null);
+  const [gridGeoJSON, setGridGeoJSON] = useState<GeoJSON.FeatureCollection | null>(null);
+  const [watershedsGeoJSON, setWatershedsGeoJSON] = useState<GeoJSON.FeatureCollection | null>(null);
+  const [iotGeoJSON, setIotGeoJSON] = useState<GeoJSON.FeatureCollection | null>(null);
+  const [landslidesGeoJSON, setLandslidesGeoJSON] = useState<GeoJSON.FeatureCollection | null>(null);
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  const [hoveredWard, setHoveredWard] = useState<WardFeatureProperties | null>(null);
   const [popupLocation, setPopupLocation] = useState<{ longitude: number; latitude: number } | null>(null);
+  const [selectedWardId, setSelectedWardId] = useState<number | null>(null);
 
-  // RAF ref to debounce mouse movements and keep 60fps interaction
+  const [showGrid, setShowGrid] = useState(true);
+  const [showWatersheds, setShowWatersheds] = useState(false);
+  const [showIot, setShowIot] = useState(true);
+  const [showLandslides, setShowLandslides] = useState(true);
+
   const rafId = useRef<number | null>(null);
-  const lastDistrictRef = useRef<string | null>(null);
 
-  // Memoize dynamic hover filter so reference only changes when active district changes
-  const hoverFilter = useMemo(() => {
-    return (hoveredDistrict
-      ? ["==", ["get", "district"], hoveredDistrict]
-      : ["==", ["get", "district"], ""]) as unknown as import("maplibre-gl").FilterSpecification;
-  }, [hoveredDistrict]);
+  /* Static layers: fetched once. */
+  useEffect(() => {
+    getWardsGeoJSON()
+      .then((fc) => setWardsGeoJSON(fc as GeoJSON.FeatureCollection))
+      .catch((err) => setLoadError(err.message || "Failed to load ward risk data."));
+
+    getWatershedsGeoJSON()
+      .then((fc) => setWatershedsGeoJSON(fc as GeoJSON.FeatureCollection))
+      .catch(() => {});
+
+    getIotSensorsGeoJSON()
+      .then((fc) => setIotGeoJSON(fc as GeoJSON.FeatureCollection))
+      .catch(() => {});
+
+    getLandslidesGeoJSON()
+      .then((fc) => setLandslidesGeoJSON(fc as GeoJSON.FeatureCollection))
+      .catch(() => {});
+  }, []);
+
+  /* Default-select the user's own ward on load, if we know where they are. */
+  useEffect(() => {
+    if (!userLocation) return;
+    getNearestWard(userLocation.lat, userLocation.lon)
+      .then((ward) => setSelectedWardId(ward.ward_id))
+      .catch(() => {});
+    // Only run once per mount -- the user can close/reselect afterward.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /* Grid layer: viewport-scoped, refetched on move once zoomed in enough. */
+  const fetchGridForViewport = useCallback(() => {
+    const map = mapRef.current?.getMap();
+    if (!map || map.getZoom() < GRID_LAYER_MIN_ZOOM) {
+      setGridGeoJSON(null);
+      return;
+    }
+    const bounds = map.getBounds();
+    getGridGeoJSON({
+      minLon: bounds.getWest(),
+      minLat: bounds.getSouth(),
+      maxLon: bounds.getEast(),
+      maxLat: bounds.getNorth(),
+    })
+      .then((fc) => setGridGeoJSON(fc as GeoJSON.FeatureCollection))
+      .catch(() => setGridGeoJSON(null));
+  }, []);
 
   const handleMouseMove = useCallback((event: MapLayerMouseEvent) => {
     const feature = event.features?.[0];
-    const district = feature?.properties?.district as string | undefined;
+    const props = feature?.properties as WardFeatureProperties | undefined;
 
-    if (!district) {
-      if (lastDistrictRef.current !== null) {
-        lastDistrictRef.current = null;
-        setHoveredDistrict(null);
-        setPopupLocation(null);
-        event.target.getCanvas().style.cursor = "";
-      }
+    if (!props?.ward_id) {
+      setHoveredWard(null);
+      setPopupLocation(null);
+      event.target.getCanvas().style.cursor = "";
       return;
     }
 
     event.target.getCanvas().style.cursor = "pointer";
-
-    // Throttle popup position updates with requestAnimationFrame
     const lng = event.lngLat.lng;
     const lat = event.lngLat.lat;
 
-    if (rafId.current !== null) {
-      cancelAnimationFrame(rafId.current);
-    }
-
+    if (rafId.current !== null) cancelAnimationFrame(rafId.current);
     rafId.current = requestAnimationFrame(() => {
-      lastDistrictRef.current = district;
-      setHoveredDistrict(district);
+      setHoveredWard(props);
       setPopupLocation({ longitude: lng, latitude: lat });
     });
   }, []);
 
-  const handleMouseLeave = useCallback((event: MapLayerMouseEvent) => {
-    if (rafId.current !== null) {
-      cancelAnimationFrame(rafId.current);
-      rafId.current = null;
-    }
-    lastDistrictRef.current = null;
-    setHoveredDistrict(null);
+  const handleMouseLeave = useCallback(() => {
+    setHoveredWard(null);
     setPopupLocation(null);
-    event.target.getCanvas().style.cursor = "";
   }, []);
 
-  const currentDistrictInfo = hoveredDistrict ? DISTRICT_DATA[hoveredDistrict] : undefined;
+  const handleClick = useCallback((event: MapLayerMouseEvent) => {
+    const feature = event.features?.[0];
+    const wardId = feature?.properties?.ward_id as number | undefined;
+    if (wardId) setSelectedWardId(wardId);
+  }, []);
+
+  const hoverFilter = useMemo(() => {
+    return (hoveredWard
+      ? ["==", ["get", "ward_id"], hoveredWard.ward_id]
+      : ["==", ["get", "ward_id"], -1]) as unknown as import("maplibre-gl").FilterSpecification;
+  }, [hoveredWard]);
 
   return (
-    <div style={{ width: "100%", height: "500px", position: "relative" }}>
+    <div style={{ width: "100%", height: "560px", position: "relative" }}>
       <Map
+        ref={mapRef}
         initialViewState={INITIAL_VIEW_STATE}
         mapStyle="https://demotiles.maplibre.org/style.json"
         interactiveLayerIds={INTERACTIVE_LAYER_IDS}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
+        onClick={handleClick}
+        onLoad={fetchGridForViewport}
+        onMoveEnd={fetchGridForViewport}
       >
         <NavigationControl position="top-right" />
 
-        {/* =========================
-            UTTARAKHAND BORDER
-        ========================== */}
+        {/* ===== STATE OUTLINE ===== */}
         <Source id="uttarakhand" type="geojson" data="/data/uttarakhand.geojson">
-          <Layer id="uttarakhand-fill" type="fill" paint={UTTARAKHAND_FILL_PAINT} />
-          <Layer id="uttarakhand-border" type="line" paint={UTTARAKHAND_BORDER_PAINT} />
+          <Layer id="uttarakhand-border" type="line" paint={{ "line-color": "#0f172a", "line-width": 2 }} />
         </Source>
 
-        {/* =========================
-            DISTRICTS
-        ========================== */}
-        <Source id="districts" type="geojson" data="/data/uttarakhand-districts.geojson">
-          <Layer id="district-risk-fill" type="fill" paint={DISTRICT_RISK_FILL_PAINT} />
-          <Layer id="district-borders" type="line" paint={DISTRICT_BORDERS_PAINT} />
-          <Layer id="hover-glow" type="line" filter={hoverFilter} paint={HOVER_GLOW_PAINT} />
-          <Layer id="hover-border" type="line" filter={hoverFilter} paint={HOVER_BORDER_PAINT} />
-          <Layer id="district-labels" type="symbol" layout={DISTRICT_LABELS_LAYOUT} paint={DISTRICT_LABELS_PAINT} />
-        </Source>
+        {/* ===== WARD-LEVEL RISK (real village boundaries) ===== */}
+        {wardsGeoJSON && (
+          <Source id="wards" type="geojson" data={wardsGeoJSON}>
+            <Layer id="ward-risk-fill" type="fill" paint={WARD_RISK_FILL_PAINT} />
+            <Layer id="ward-borders" type="line" paint={WARD_BORDERS_PAINT} />
+            <Layer id="ward-hover-glow" type="line" filter={hoverFilter} paint={HOVER_GLOW_PAINT} />
+          </Source>
+        )}
 
-        {/* =========================
-            HOVER POPUP
-        ========================== */}
-        {hoveredDistrict && popupLocation && (
+        {/* ===== WATERSHED BOUNDARIES (optional) ===== */}
+        {showWatersheds && watershedsGeoJSON && (
+          <Source id="watersheds" type="geojson" data={watershedsGeoJSON}>
+            <Layer
+              id="watershed-borders"
+              type="line"
+              paint={{ "line-color": "#38bdf8", "line-width": 1, "line-dasharray": [2, 2] }}
+            />
+          </Source>
+        )}
+
+        {/* ===== FINE-GRID RISK (100-250m cells, viewport-scoped) ===== */}
+        {showGrid && gridGeoJSON && (
+          <Source id="grid" type="geojson" data={gridGeoJSON}>
+            <Layer id="grid-risk-fill" type="fill" paint={GRID_RISK_FILL_PAINT} />
+          </Source>
+        )}
+
+        {/* ===== IOT SENSORS ===== */}
+        {showIot && iotGeoJSON && (
+          <Source id="iot-sensors" type="geojson" data={iotGeoJSON}>
+            <Layer id="iot-sensor-points" type="circle" paint={IOT_SENSOR_PAINT} />
+          </Source>
+        )}
+
+        {/* ===== HISTORICAL LANDSLIDES ===== */}
+        {showLandslides && landslidesGeoJSON && (
+          <Source id="landslides" type="geojson" data={landslidesGeoJSON}>
+            <Layer id="landslide-points" type="circle" paint={LANDSLIDE_PAINT} />
+          </Source>
+        )}
+
+        {/* ===== HOVER POPUP ===== */}
+        {hoveredWard && popupLocation && (
           <Popup
             longitude={popupLocation.longitude}
             latitude={popupLocation.latitude}
@@ -244,34 +287,49 @@ function FloodMapComponent() {
             offset={20}
           >
             <div className="district-popup">
-              <p className="popup-small">FLOOD HISTORY</p>
-              <h2>{hoveredDistrict}</h2>
-
-              <div className="popup-stat">
-                <span>🌊 Flood Events</span>
-                <strong>{currentDistrictInfo?.floods ?? 0}</strong>
-              </div>
+              <p className="popup-small">WARD</p>
+              <h2>{hoveredWard.ward_name}</h2>
 
               <div className="popup-stat">
                 <span>⚠ Risk Level</span>
-                <strong style={{ color: getRiskColor(currentDistrictInfo?.risk) }}>
-                  {currentDistrictInfo?.risk ?? "Unassigned"}
+                <strong style={{ color: getRiskColor(hoveredWard.risk_category) }}>
+                  {hoveredWard.risk_category ?? "Unassigned"}
                 </strong>
               </div>
 
-              <p className="popup-description">
-                {currentDistrictInfo?.description ?? "Flood information is currently unavailable."}
-              </p>
+              <div className="popup-stat">
+                <span>📊 Risk Score</span>
+                <strong>{hoveredWard.ward_risk_score != null ? hoveredWard.ward_risk_score.toFixed(2) : "—"}</strong>
+              </div>
 
-              <p className="demo-warning">Demo frontend data</p>
+              <p className="popup-description">Click for full ward details.</p>
             </div>
           </Popup>
         )}
       </Map>
 
-      {/* =========================
-          FLOOD RISK LEGEND
-      ========================== */}
+      {/* ===== LAYER TOGGLES ===== */}
+      <div className="risk-legend" style={{ top: 12, right: 60 }}>
+        <h3>Layers</h3>
+        <label style={{ display: "flex", gap: 6, alignItems: "center", fontSize: 13, cursor: "pointer" }}>
+          <input type="checkbox" checked={showGrid} onChange={(e) => setShowGrid(e.target.checked)} />
+          Fine grid (zoom ≥ {GRID_LAYER_MIN_ZOOM})
+        </label>
+        <label style={{ display: "flex", gap: 6, alignItems: "center", fontSize: 13, cursor: "pointer" }}>
+          <input type="checkbox" checked={showWatersheds} onChange={(e) => setShowWatersheds(e.target.checked)} />
+          Watershed boundaries
+        </label>
+        <label style={{ display: "flex", gap: 6, alignItems: "center", fontSize: 13, cursor: "pointer" }}>
+          <input type="checkbox" checked={showIot} onChange={(e) => setShowIot(e.target.checked)} />
+          IoT sensors
+        </label>
+        <label style={{ display: "flex", gap: 6, alignItems: "center", fontSize: 13, cursor: "pointer" }}>
+          <input type="checkbox" checked={showLandslides} onChange={(e) => setShowLandslides(e.target.checked)} />
+          Historical landslides
+        </label>
+      </div>
+
+      {/* ===== FLOOD RISK LEGEND ===== */}
       <div className="risk-legend">
         <h3>Flood Risk</h3>
         <div className="legend-item">
@@ -290,11 +348,17 @@ function FloodMapComponent() {
           <span className="legend-color" style={{ background: "#ef4444" }}></span>
           Critical
         </div>
-        <div className="legend-item">
-          <span className="legend-color" style={{ background: "#94a3b8" }}></span>
-          Unassigned
-        </div>
       </div>
+
+      {loadError && (
+        <div style={{ position: "absolute", bottom: 12, left: 12, color: "#f87171", fontSize: 13 }}>
+          ⚠ {loadError}
+        </div>
+      )}
+
+      {selectedWardId != null && (
+        <WardDetailPanel wardId={selectedWardId} onClose={() => setSelectedWardId(null)} />
+      )}
     </div>
   );
 }
