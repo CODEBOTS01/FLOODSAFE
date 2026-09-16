@@ -28,11 +28,335 @@ type LocationSuggestion = {
 };
 
 
+type Language = "en" | "hi";
+
+
+/* ========================================
+   TRANSLATIONS
+======================================== */
+
+const translations = {
+
+  en: {
+
+    platform:
+      "UTTARAKHAND FLOOD SAFETY & AWARENESS PLATFORM",
+
+    brandDescription:
+      "Flood monitoring, emergency awareness and safer navigation for Uttarakhand",
+
+    historyLabel:
+      "UTTARAKHAND FLOOD HISTORY",
+
+    historyTitle:
+      "Why preparedness matters",
+
+    historyDescription:
+      "Uttarakhand's mountain terrain and river valleys can experience rapidly changing conditions during intense rainfall.",
+
+    kedarnathTitle:
+      "Kedarnath Flood Disaster",
+
+    kedarnathText:
+      "Extreme rainfall and flooding caused widespread destruction around Kedarnath and Rudraprayag.",
+
+    chamoliTitle:
+      "Chamoli Flash Flood",
+
+    chamoliText:
+      "A major flash flood affected the Rishiganga and Dhauliganga valleys.",
+
+    quote:
+      "Awareness before an emergency can make every minute more useful.",
+
+    getStarted:
+      "GET STARTED",
+
+    profileTitle:
+      "Set up your safety profile",
+
+    profileDescription:
+      "Enter a few details so FLOODSAFE can show information relevant to your area.",
+
+    fullName:
+      "Full name",
+
+    fullNamePlaceholder:
+      "Enter your full name",
+
+    mobile:
+      "Mobile number",
+
+    mobilePlaceholder:
+      "10-digit mobile number",
+
+    currentLocation:
+      "Current location",
+
+    locationHelp:
+      "Used for local conditions",
+
+    locationPlaceholder:
+      "Start typing a place...",
+
+    searching:
+      "Searching...",
+
+    detectingLocation:
+      "Detecting your location...",
+
+    useLocation:
+      "Use my current location",
+
+    locationDetected:
+      "Location detected successfully",
+
+    locationSelected:
+      "Location selected",
+
+    locationNotSupported:
+      "Location is not supported by this browser.",
+
+    locationPermissionDenied:
+      "Location permission was denied.",
+
+    locationUnavailable:
+      "Your location could not be detected.",
+
+    locationTimeout:
+      "Location request timed out.",
+
+    locationGenericError:
+      "Unable to detect your location.",
+
+    locationNameError:
+      "Location detected, but the place name could not be loaded.",
+
+    email:
+      "Email address",
+
+    emailPlaceholder:
+      "name@example.com",
+
+    continue:
+      "Continue to FLOODSAFE",
+
+    privacy:
+      "Your location is used to provide relevant flood-safety information and local conditions.",
+
+    whyLocation:
+      "WHY YOUR LOCATION MATTERS",
+
+    locationInfoTitle:
+      "Information that follows your location",
+
+    rainfall:
+      "Local rainfall",
+
+    rainfallText:
+      "View recent rainfall conditions near your selected location.",
+
+    river:
+      "River conditions",
+
+    riverText:
+      "Monitor estimated river discharge near your area.",
+
+    alerts:
+      "Official alerts",
+
+    alertsText:
+      "Check available emergency information relevant to your location.",
+
+    navigation:
+      "Safer navigation",
+
+    navigationText:
+      "Use FLOODSAFE to understand flood risk before choosing your route.",
+
+    stayPrepared:
+      "STAY PREPARED",
+
+    preparedText:
+      "Avoid flooded roads, follow official instructions and check conditions before travelling.",
+
+    footer:
+      "Built for flood awareness and safer decision-making."
+
+  },
+
+
+  hi: {
+
+    platform:
+      "उत्तराखंड बाढ़ सुरक्षा एवं जागरूकता मंच",
+
+    brandDescription:
+      "उत्तराखंड के लिए बाढ़ निगरानी, आपातकालीन जागरूकता और सुरक्षित मार्ग सहायता",
+
+    historyLabel:
+      "उत्तराखंड बाढ़ इतिहास",
+
+    historyTitle:
+      "तैयारी क्यों महत्वपूर्ण है",
+
+    historyDescription:
+      "उत्तराखंड के पहाड़ी क्षेत्रों और नदी घाटियों में भारी वर्षा के दौरान परिस्थितियाँ तेजी से बदल सकती हैं।",
+
+    kedarnathTitle:
+      "केदारनाथ बाढ़ आपदा",
+
+    kedarnathText:
+      "अत्यधिक वर्षा और बाढ़ ने केदारनाथ और रुद्रप्रयाग के आसपास व्यापक नुकसान पहुँचाया।",
+
+    chamoliTitle:
+      "चमोली अचानक बाढ़",
+
+    chamoliText:
+      "एक बड़ी अचानक बाढ़ ने ऋषिगंगा और धौलीगंगा घाटियों को प्रभावित किया।",
+
+    quote:
+      "आपदा से पहले की जागरूकता हर महत्वपूर्ण मिनट को अधिक उपयोगी बना सकती है।",
+
+    getStarted:
+      "शुरू करें",
+
+    profileTitle:
+      "अपना सुरक्षा प्रोफ़ाइल बनाएं",
+
+    profileDescription:
+      "कुछ आवश्यक जानकारी दर्ज करें ताकि FLOODSAFE आपके क्षेत्र से संबंधित जानकारी दिखा सके।",
+
+    fullName:
+      "पूरा नाम",
+
+    fullNamePlaceholder:
+      "अपना पूरा नाम दर्ज करें",
+
+    mobile:
+      "मोबाइल नंबर",
+
+    mobilePlaceholder:
+      "10 अंकों का मोबाइल नंबर",
+
+    currentLocation:
+      "वर्तमान स्थान",
+
+    locationHelp:
+      "स्थानीय जानकारी के लिए उपयोग किया जाएगा",
+
+    locationPlaceholder:
+      "स्थान लिखना शुरू करें...",
+
+    searching:
+      "खोज जारी है...",
+
+    detectingLocation:
+      "आपका स्थान खोजा जा रहा है...",
+
+    useLocation:
+      "मेरे वर्तमान स्थान का उपयोग करें",
+
+    locationDetected:
+      "स्थान सफलतापूर्वक प्राप्त हुआ",
+
+    locationSelected:
+      "स्थान चुना गया",
+
+    locationNotSupported:
+      "यह ब्राउज़र स्थान सेवा का समर्थन नहीं करता है।",
+
+    locationPermissionDenied:
+      "स्थान की अनुमति नहीं दी गई।",
+
+    locationUnavailable:
+      "आपका वर्तमान स्थान प्राप्त नहीं हो सका।",
+
+    locationTimeout:
+      "स्थान खोजने में बहुत अधिक समय लग गया।",
+
+    locationGenericError:
+      "आपका स्थान प्राप्त नहीं किया जा सका।",
+
+    locationNameError:
+      "स्थान प्राप्त हुआ, लेकिन स्थान का नाम लोड नहीं हो सका।",
+
+    email:
+      "ईमेल पता",
+
+    emailPlaceholder:
+      "name@example.com",
+
+    continue:
+      "FLOODSAFE पर आगे बढ़ें",
+
+    privacy:
+      "आपके स्थान का उपयोग केवल संबंधित बाढ़ सुरक्षा और स्थानीय जानकारी दिखाने के लिए किया जाता है।",
+
+    whyLocation:
+      "आपका स्थान क्यों महत्वपूर्ण है",
+
+    locationInfoTitle:
+      "आपके स्थान के अनुसार महत्वपूर्ण जानकारी",
+
+    rainfall:
+      "स्थानीय वर्षा",
+
+    rainfallText:
+      "अपने चुने हुए स्थान के आसपास की हाल की वर्षा की स्थिति देखें।",
+
+    river:
+      "नदी की स्थिति",
+
+    riverText:
+      "अपने क्षेत्र के पास अनुमानित नदी जल प्रवाह की निगरानी करें।",
+
+    alerts:
+      "आधिकारिक चेतावनियाँ",
+
+    alertsText:
+      "अपने स्थान से संबंधित उपलब्ध आपातकालीन चेतावनियाँ देखें।",
+
+    navigation:
+      "सुरक्षित मार्ग",
+
+    navigationText:
+      "यात्रा का मार्ग चुनने से पहले FLOODSAFE से बाढ़ जोखिम की जानकारी प्राप्त करें।",
+
+    stayPrepared:
+      "सुरक्षित रहें और तैयार रहें",
+
+    preparedText:
+      "बाढ़ वाली सड़कों से बचें, आधिकारिक निर्देशों का पालन करें और यात्रा से पहले परिस्थितियों की जाँच करें।",
+
+    footer:
+      "बाढ़ जागरूकता और सुरक्षित निर्णय लेने के लिए विकसित।"
+
+  }
+
+};
+
+
 /* ========================================
    LOGIN PAGE
 ======================================== */
 
-function LoginPage({ onLogin }: LoginPageProps) {
+function LoginPage({
+  onLogin
+}: LoginPageProps) {
+
+
+  /* ========================================
+     LANGUAGE
+  ======================================== */
+
+  const [language, setLanguage] =
+    useState<Language>("en");
+
+
+  const t =
+    translations[language];
+
 
   /* ========================================
      FORM DATA
@@ -40,101 +364,135 @@ function LoginPage({ onLogin }: LoginPageProps) {
 
   const [formData, setFormData] =
     useState<UserData>({
+
       name: "",
+
       mobile: "",
+
       place: "",
+
       email: "",
+
       latitude: 0,
+
       longitude: 0
+
     });
 
 
   /* ========================================
-     GPS STATES
+     LOCATION STATES
   ======================================== */
 
   const [locationLoading, setLocationLoading] =
     useState(false);
 
+
   const [locationError, setLocationError] =
     useState("");
+
 
   const [gpsDetected, setGpsDetected] =
     useState(false);
 
 
   /* ========================================
-     LOCATION SEARCH STATES
+     AUTOCOMPLETE STATES
   ======================================== */
 
   const [suggestions, setSuggestions] =
     useState<LocationSuggestion[]>([]);
 
+
   const [showSuggestions, setShowSuggestions] =
     useState(false);
 
+
   const [searchLoading, setSearchLoading] =
     useState(false);
+
 
   const [locationTyping, setLocationTyping] =
     useState(false);
 
 
+
   /* ========================================
-     HANDLE INPUT CHANGE
+     INPUT CHANGE
   ======================================== */
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
 
-    const { name, value } = e.target;
+    const {
+      name,
+      value
+    } = e.target;
 
 
     /* LOCATION INPUT */
 
-    if (name === "place") {
+    if (
+      name === "place"
+    ) {
 
-      setFormData((previousData) => ({
-        ...previousData,
+      setFormData(
+        (previous) => ({
 
-        place: value,
+          ...previous,
 
-        /*
-          Remove old coordinates
-          when user manually types
-          another location.
-        */
+          place:
+            value,
 
-        latitude: 0,
-        longitude: 0
-      }));
+          latitude:
+            0,
+
+          longitude:
+            0
+
+        })
+      );
 
 
-      setLocationTyping(true);
+      setLocationTyping(
+        true
+      );
 
-      setGpsDetected(false);
 
-      setLocationError("");
+      setGpsDetected(
+        false
+      );
+
+
+      setLocationError(
+        ""
+      );
+
 
       return;
     }
 
 
-    /* OTHER INPUTS */
+    /* NORMAL INPUT */
 
-    setFormData((previousData) => ({
-      ...previousData,
-      [name]: value
-    }));
+    setFormData(
+      (previous) => ({
+
+        ...previous,
+
+        [name]:
+          value
+
+      })
+    );
 
   };
 
 
-  /* ========================================
-     LOCATION AUTOCOMPLETE
 
-     Searches Uttarakhand locations.
+  /* ========================================
+     UTTARAKHAND AUTOCOMPLETE
   ======================================== */
 
   useEffect(() => {
@@ -143,28 +501,27 @@ function LoginPage({ onLogin }: LoginPageProps) {
       formData.place.trim();
 
 
-    /*
-      Don't search when the value came
-      from GPS or suggestion selection.
-    */
+    if (
+      !locationTyping
+    ) {
 
-    if (!locationTyping) {
       return;
     }
 
 
-    /*
-      Start searching after user
-      types at least 2 characters.
-    */
-
-    if (query.length < 2) {
+    if (
+      query.length < 2
+    ) {
 
       setSuggestions([]);
 
-      setShowSuggestions(false);
+      setShowSuggestions(
+        false
+      );
 
-      setSearchLoading(false);
+      setSearchLoading(
+        false
+      );
 
       return;
     }
@@ -174,266 +531,329 @@ function LoginPage({ onLogin }: LoginPageProps) {
       new AbortController();
 
 
-    /*
-      Wait 400ms before searching.
-      This prevents API requests for
-      every single keystroke.
-    */
+    const timer =
+      setTimeout(
 
-    const timer = setTimeout(
-      async () => {
+        async () => {
 
-        try {
+          try {
 
-          setSearchLoading(true);
-
-
-          /*
-            Approximate Uttarakhand
-            geographic bounding box.
-
-            west,south,east,north
-          */
-
-          const uttarakhandBBox =
-            "77.3,28.4,81.3,31.6";
-
-
-          const url =
-            "https://photon.komoot.io/api/?" +
-            `q=${encodeURIComponent(query)}` +
-            `&bbox=${uttarakhandBBox}` +
-            "&limit=10" +
-            "&lang=en";
-
-
-          const response =
-            await fetch(
-              url,
-              {
-                signal:
-                  controller.signal
-              }
+            setSearchLoading(
+              true
             );
 
 
-          if (!response.ok) {
+            /*
+              Approximate Uttarakhand
+              geographic bounding box.
+            */
 
-            throw new Error(
-              "Location search failed"
-            );
-
-          }
-
-
-          const data =
-            await response.json();
+            const uttarakhandBBox =
+              "77.3,28.4,81.3,31.6";
 
 
-          const results:
-            LocationSuggestion[] =
-            (data.features || [])
+            /*
+              Search language changes
+              with English / Hindi.
+            */
 
-              .filter(
-                (feature: any) => {
-
-                  const properties =
-                    feature.properties || {};
-
-
-                  const state =
-                    (
-                      properties.state ||
-                      ""
-                    ).toLowerCase();
+            const searchLanguage =
+              language === "hi"
+                ? "hi"
+                : "en";
 
 
-                  /*
-                    Only keep places
-                    inside Uttarakhand.
-                  */
+            const url =
 
-                  return (
-                    state.includes(
-                      "uttarakhand"
-                    )
-                  );
+              "https://photon.komoot.io/api/?" +
 
-                }
-              )
+              `q=${encodeURIComponent(query)}` +
 
-              .map(
-                (feature: any) => {
+              `&bbox=${uttarakhandBBox}` +
 
-                  const properties =
-                    feature.properties || {};
+              "&limit=10" +
+
+              `&lang=${searchLanguage}`;
 
 
-                  const coordinates =
-                    feature.geometry
-                      ?.coordinates || [
-                      0,
-                      0
-                    ];
-
-
-                  const name =
-                    properties.name ||
-                    properties.city ||
-                    properties.locality ||
-                    properties.district ||
-                    properties.county ||
-                    "Unknown Place";
-
-
-                  const district =
-                    properties.district ||
-                    properties.county ||
-                    "";
-
-
-                  const state =
-                    properties.state ||
-                    "Uttarakhand";
-
-
-                  let displayName =
-                    name;
-
-
-                  /*
-                    Example:
-
-                    Tapovan,
-                    Chamoli,
-                    Uttarakhand
-                  */
-
-                  if (
-                    district &&
-                    district
-                      .toLowerCase() !==
-                      name.toLowerCase()
-                  ) {
-
-                    displayName +=
-                      `, ${district}`;
-
-                  }
-
-
-                  if (
-                    state &&
-                    !displayName
-                      .toLowerCase()
-                      .includes(
-                        state.toLowerCase()
-                      )
-                  ) {
-
-                    displayName +=
-                      `, ${state}`;
-
-                  }
-
-
-                  return {
-
-                    name:
-                      name,
-
-                    displayName:
-                      displayName,
-
-                    longitude:
-                      coordinates[0],
-
-                    latitude:
-                      coordinates[1]
-
-                  };
-
+            const response =
+              await fetch(
+                url,
+                {
+                  signal:
+                    controller.signal
                 }
               );
 
 
-          /* REMOVE DUPLICATES */
+            if (
+              !response.ok
+            ) {
 
-          const uniqueResults =
-            results.filter(
-              (
-                location,
-                index,
-                array
-              ) =>
+              throw new Error(
+                "Location search failed"
+              );
 
-                index ===
-                array.findIndex(
-                  (item) =>
-                    item.displayName ===
-                    location.displayName
+            }
+
+
+            const data =
+              await response.json();
+
+
+            const results:
+              LocationSuggestion[] =
+
+              (data.features || [])
+
+                .filter(
+                  (feature: any) => {
+
+                    const state =
+                      (
+                        feature.properties
+                          ?.state ||
+                        ""
+                      )
+                        .toLowerCase();
+
+
+                    /*
+                      Accept English and
+                      Hindi state name.
+                    */
+
+                    return (
+
+                      state.includes(
+                        "uttarakhand"
+                      ) ||
+
+                      state.includes(
+                        "उत्तराखंड"
+                      )
+
+                    );
+
+                  }
                 )
 
+                .map(
+                  (feature: any) => {
+
+                    const properties =
+                      feature.properties ||
+                      {};
+
+
+                    const coordinates =
+                      feature.geometry
+                        ?.coordinates ||
+                      [
+                        0,
+                        0
+                      ];
+
+
+                    const name =
+
+                      properties.name ||
+
+                      properties.city ||
+
+                      properties.locality ||
+
+                      properties.district ||
+
+                      properties.county ||
+
+                      (
+                        language === "hi"
+
+                          ? "अज्ञात स्थान"
+
+                          : "Unknown Place"
+                      );
+
+
+                    const district =
+
+                      properties.district ||
+
+                      properties.county ||
+
+                      "";
+
+
+                    const state =
+
+                      properties.state ||
+
+                      (
+                        language === "hi"
+
+                          ? "उत्तराखंड"
+
+                          : "Uttarakhand"
+                      );
+
+
+                    let displayName =
+                      name;
+
+
+                    if (
+                      district &&
+
+                      district
+                        .toLowerCase() !==
+                      name
+                        .toLowerCase()
+                    ) {
+
+                      displayName +=
+                        `, ${district}`;
+
+                    }
+
+
+                    if (
+                      state &&
+
+                      !displayName
+                        .toLowerCase()
+                        .includes(
+                          state
+                            .toLowerCase()
+                        )
+                    ) {
+
+                      displayName +=
+                        `, ${state}`;
+
+                    }
+
+
+                    return {
+
+                      name:
+                        name,
+
+                      displayName:
+                        displayName,
+
+                      longitude:
+                        coordinates[0],
+
+                      latitude:
+                        coordinates[1]
+
+                    };
+
+                  }
+                );
+
+
+            /* REMOVE DUPLICATES */
+
+            const uniqueResults =
+              results.filter(
+                (
+                  location,
+                  index,
+                  array
+                ) =>
+
+                  index ===
+
+                  array.findIndex(
+                    (item) =>
+
+                      item.displayName ===
+                      location.displayName
+
+                  )
+              );
+
+
+            setSuggestions(
+              uniqueResults
             );
 
 
-          setSuggestions(
-            uniqueResults
-          );
-
-
-          setShowSuggestions(
-            uniqueResults.length > 0
-          );
-
-
-          setSearchLoading(false);
-
-        }
-
-        catch (error: any) {
-
-          if (
-            error.name !==
-            "AbortError"
-          ) {
-
-            console.error(
-              "Location search error:",
-              error
+            setShowSuggestions(
+              uniqueResults.length > 0
             );
 
 
-            setSuggestions([]);
-
-            setShowSuggestions(false);
-
-            setSearchLoading(false);
+            setSearchLoading(
+              false
+            );
 
           }
 
-        }
+          catch (
+            error: any
+          ) {
 
-      },
+            if (
+              error.name !==
+              "AbortError"
+            ) {
 
-      400
-    );
+              console.error(
+                "Location search error:",
+                error
+              );
 
 
-    /* CLEANUP */
+              setSuggestions(
+                []
+              );
+
+
+              setShowSuggestions(
+                false
+              );
+
+
+              setSearchLoading(
+                false
+              );
+
+            }
+
+          }
+
+        },
+
+        400
+
+      );
+
 
     return () => {
 
-      clearTimeout(timer);
+      clearTimeout(
+        timer
+      );
+
 
       controller.abort();
 
     };
 
+
   }, [
+
     formData.place,
-    locationTyping
+
+    locationTyping,
+
+    language
+
   ]);
+
 
 
   /* ========================================
@@ -444,13 +864,15 @@ function LoginPage({ onLogin }: LoginPageProps) {
     location: LocationSuggestion
   ) => {
 
-    setLocationTyping(false);
+    setLocationTyping(
+      false
+    );
 
 
     setFormData(
-      (previousData) => ({
+      (previous) => ({
 
-        ...previousData,
+        ...previous,
 
         place:
           location.displayName,
@@ -465,13 +887,24 @@ function LoginPage({ onLogin }: LoginPageProps) {
     );
 
 
-    setSuggestions([]);
+    setSuggestions(
+      []
+    );
 
-    setShowSuggestions(false);
 
-    setGpsDetected(false);
+    setShowSuggestions(
+      false
+    );
 
-    setLocationError("");
+
+    setGpsDetected(
+      false
+    );
+
+
+    setLocationError(
+      ""
+    );
 
 
     console.log(
@@ -494,287 +927,345 @@ function LoginPage({ onLogin }: LoginPageProps) {
   };
 
 
+
   /* ========================================
-     GPS CURRENT LOCATION
+     GPS
   ======================================== */
 
   const getCurrentLocation = () => {
 
-    setLocationError("");
+    setLocationError(
+      ""
+    );
 
-    setGpsDetected(false);
 
-    setLocationTyping(false);
+    setGpsDetected(
+      false
+    );
 
-    setSuggestions([]);
 
-    setShowSuggestions(false);
+    setLocationTyping(
+      false
+    );
+
+
+    setSuggestions(
+      []
+    );
+
+
+    setShowSuggestions(
+      false
+    );
 
 
     /* CHECK GPS SUPPORT */
 
-    if (!navigator.geolocation) {
+    if (
+      !navigator.geolocation
+    ) {
 
       setLocationError(
-        "GPS location is not supported by your browser."
+        t.locationNotSupported
       );
 
-      return;
 
+      return;
     }
 
 
-    setLocationLoading(true);
+    setLocationLoading(
+      true
+    );
 
 
-    navigator.geolocation.getCurrentPosition(
-
-      /* ========================================
-         GPS SUCCESS
-      ======================================== */
-
-      async (position) => {
-
-        const latitude =
-          position.coords.latitude;
-
-        const longitude =
-          position.coords.longitude;
+    navigator.geolocation
+      .getCurrentPosition(
 
 
-        try {
+        /* ========================================
+           GPS SUCCESS
+        ======================================== */
 
-          /*
-            Convert coordinates into
-            readable location name.
-          */
+        async (
+          position
+        ) => {
 
-          const response =
-            await fetch(
+          const latitude =
+            position.coords.latitude;
 
-              "https://nominatim.openstreetmap.org/reverse" +
 
-              "?format=json" +
+          const longitude =
+            position.coords.longitude;
 
-              `&lat=${latitude}` +
 
-              `&lon=${longitude}`
+          try {
 
+            const searchLanguage =
+              language === "hi"
+                ? "hi"
+                : "en";
+
+
+            /*
+              Convert coordinates to
+              readable location.
+            */
+
+            const response =
+              await fetch(
+
+                "https://nominatim.openstreetmap.org/reverse" +
+
+                "?format=json" +
+
+                `&lat=${latitude}` +
+
+                `&lon=${longitude}` +
+
+                `&accept-language=${searchLanguage}`
+
+              );
+
+
+            if (
+              !response.ok
+            ) {
+
+              throw new Error(
+                "Could not load location name."
+              );
+
+            }
+
+
+            const data =
+              await response.json();
+
+
+            const address =
+              data.address ||
+              {};
+
+
+            const city =
+
+              address.city ||
+
+              address.town ||
+
+              address.village ||
+
+              address.suburb ||
+
+              address.city_district ||
+
+              address.county ||
+
+              address.state_district ||
+
+              "";
+
+
+            const state =
+              address.state ||
+              "";
+
+
+            const readableLocation =
+
+              `${city}${
+                city && state
+
+                  ? ", "
+
+                  : ""
+              }${state}`;
+
+
+            setFormData(
+              (previous) => ({
+
+                ...previous,
+
+                place:
+
+                  readableLocation ||
+
+                  `${latitude.toFixed(
+                    6
+                  )}, ${longitude.toFixed(
+                    6
+                  )}`,
+
+                latitude:
+                  latitude,
+
+                longitude:
+                  longitude
+
+              })
             );
 
 
-          if (!response.ok) {
+            setGpsDetected(
+              true
+            );
 
-            throw new Error(
-              "Could not load location name."
+
+            setLocationLoading(
+              false
+            );
+
+
+            console.log(
+              "GPS Location:",
+              readableLocation
+            );
+
+
+            console.log(
+              "GPS Latitude:",
+              latitude
+            );
+
+
+            console.log(
+              "GPS Longitude:",
+              longitude
             );
 
           }
 
+          catch (
+            error
+          ) {
 
-          const data =
-            await response.json();
-
-
-          const address =
-            data.address || {};
-
-
-          const city =
-            address.city ||
-            address.town ||
-            address.village ||
-            address.suburb ||
-            address.city_district ||
-            address.county ||
-            address.state_district ||
-            "";
+            console.error(
+              "Reverse geocoding error:",
+              error
+            );
 
 
-          const state =
-            address.state ||
-            "";
+            setFormData(
+              (previous) => ({
+
+                ...previous,
+
+                place:
+
+                  `${latitude.toFixed(
+                    6
+                  )}, ${longitude.toFixed(
+                    6
+                  )}`,
+
+                latitude:
+                  latitude,
+
+                longitude:
+                  longitude
+
+              })
+            );
 
 
-          let readableLocation =
-            city;
+            setGpsDetected(
+              true
+            );
+
+
+            setLocationError(
+              t.locationNameError
+            );
+
+
+            setLocationLoading(
+              false
+            );
+
+          }
+
+        },
+
+
+        /* ========================================
+           GPS ERROR
+        ======================================== */
+
+        (
+          error
+        ) => {
+
+          setLocationLoading(
+            false
+          );
 
 
           if (
-            state &&
-            !city
-              .toLowerCase()
-              .includes(
-                state.toLowerCase()
-              )
+            error.code === 1
           ) {
 
-            readableLocation +=
-              `${city ? ", " : ""}${state}`;
+            setLocationError(
+              t.locationPermissionDenied
+            );
 
           }
 
+          else if (
+            error.code === 2
+          ) {
 
-          /*
-            Save readable location AND
-            exact coordinates.
-          */
+            setLocationError(
+              t.locationUnavailable
+            );
 
-          setFormData(
-            (previousData) => ({
+          }
 
-              ...previousData,
+          else if (
+            error.code === 3
+          ) {
 
-              place:
-                readableLocation ||
-                `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
+            setLocationError(
+              t.locationTimeout
+            );
 
-              latitude:
-                latitude,
+          }
 
-              longitude:
-                longitude
+          else {
 
-            })
-          );
+            setLocationError(
+              t.locationGenericError
+            );
 
+          }
 
-          setGpsDetected(true);
-
-          setLocationLoading(false);
-
-
-          console.log(
-            "GPS Location:",
-            readableLocation
-          );
+        },
 
 
-          console.log(
-            "GPS Latitude:",
-            latitude
-          );
+        /* GPS OPTIONS */
 
+        {
 
-          console.log(
-            "GPS Longitude:",
-            longitude
-          );
+          enableHighAccuracy:
+            true,
+
+          timeout:
+            10000,
+
+          maximumAge:
+            0
 
         }
 
-        catch (error) {
-
-          /*
-            GPS worked, but readable
-            place lookup failed.
-
-            Keep coordinates instead.
-          */
-
-          setFormData(
-            (previousData) => ({
-
-              ...previousData,
-
-              place:
-                `${latitude.toFixed(6)}, ${longitude.toFixed(6)}`,
-
-              latitude:
-                latitude,
-
-              longitude:
-                longitude
-
-            })
-          );
-
-
-          setGpsDetected(true);
-
-
-          setLocationError(
-            "GPS detected, but the place name could not be loaded."
-          );
-
-
-          setLocationLoading(false);
-
-        }
-
-      },
-
-
-      /* ========================================
-         GPS ERROR
-      ======================================== */
-
-      (error) => {
-
-        setLocationLoading(false);
-
-
-        if (error.code === 1) {
-
-          setLocationError(
-            "Location permission denied. Please allow location access."
-          );
-
-        }
-
-        else if (
-          error.code === 2
-        ) {
-
-          setLocationError(
-            "Your current location could not be detected."
-          );
-
-        }
-
-        else if (
-          error.code === 3
-        ) {
-
-          setLocationError(
-            "Location request timed out."
-          );
-
-        }
-
-        else {
-
-          setLocationError(
-            "Unable to get your current location."
-          );
-
-        }
-
-      },
-
-
-      /* ========================================
-         GPS OPTIONS
-      ======================================== */
-
-      {
-        enableHighAccuracy:
-          true,
-
-        timeout:
-          10000,
-
-        maximumAge:
-          0
-      }
-
-    );
+      );
 
   };
 
 
+
   /* ========================================
-     FORM SUBMIT
+     SUBMIT
   ======================================== */
 
   const handleSubmit = (
@@ -784,19 +1275,18 @@ function LoginPage({ onLogin }: LoginPageProps) {
     e.preventDefault();
 
 
-    /*
-      Send complete user data to App.tsx
-    */
-
-    onLogin(formData);
-
-
     console.log(
       "FLOODSAFE User Data:",
       formData
     );
 
+
+    onLogin(
+      formData
+    );
+
   };
+
 
 
   /* ========================================
@@ -805,279 +1295,334 @@ function LoginPage({ onLogin }: LoginPageProps) {
 
   return (
 
-    <div className="login-page">
+    <div className="new-login-page">
 
-      <div className="login-layout">
+
+      {/* ========================================
+          TOP BRAND
+      ======================================== */}
+
+      <header className="login-brand-header">
+
+
+        {/* LANGUAGE SWITCHER */}
+
+        <div className="language-switcher">
+
+
+          <button
+
+            type="button"
+
+            className={
+
+              language === "en"
+
+                ? "language-button active-language"
+
+                : "language-button"
+
+            }
+
+            onClick={() => {
+
+              setLanguage(
+                "en"
+              );
+
+            }}
+
+          >
+
+            English
+
+          </button>
+
+
+          <span>
+            |
+          </span>
+
+
+          <button
+
+            type="button"
+
+            className={
+
+              language === "hi"
+
+                ? "language-button active-language"
+
+                : "language-button"
+
+            }
+
+            onClick={() => {
+
+              setLanguage(
+                "hi"
+              );
+
+            }}
+
+          >
+
+            हिन्दी
+
+          </button>
+
+
+        </div>
+
+
+
+        <div className="login-brand-center">
+
+
+          <p className="login-government-line">
+
+            {
+              t.platform
+            }
+
+          </p>
+
+
+          <h1>
+
+            FLOODSAFE
+
+          </h1>
+
+
+          <p className="login-brand-description">
+
+            {
+              t.brandDescription
+            }
+
+          </p>
+
+
+        </div>
+
+
+      </header>
+
+
+
+      {/* ========================================
+          MAIN 3 COLUMN LAYOUT
+      ======================================== */}
+
+      <main className="login-main-layout">
 
 
         {/* ========================================
-            LEFT INFORMATION PANEL
+            LEFT - FLOOD HISTORY
         ======================================== */}
 
-        <section className="flood-info-panel">
-
-          <div className="info-content">
+        <aside className="login-info-column">
 
 
-            <p className="info-small">
+          <p className="login-side-label">
 
-              UTTARAKHAND FLOOD AWARENESS
+            {
+              t.historyLabel
+            }
 
-            </p>
-
-
-            <h1>
-
-              Learn From The Past.
-
-              <br />
-
-              Prepare For The Future.
-
-            </h1>
+          </p>
 
 
-            <p className="info-description">
+          <h1 className="login-side-title">
 
-              Uttarakhand has experienced several severe flood
-              and flash-flood disasters. FLOODSAFE aims to help
-              people understand risk and reach safer routes faster.
+            {
+              t.historyTitle
+            }
 
-            </p>
+          </h1>
+
+
+          <p className="login-side-description">
+
+            {
+              t.historyDescription
+            }
+
+          </p>
 
 
 
-            {/* ========================================
-                HISTORY CARDS
-            ======================================== */}
-
-            <div className="history-cards">
+          <div className="flood-timeline">
 
 
-              {/* KEDARNATH */}
+            {/* 2013 */}
 
-              <div
-                className="
-                  history-card
-                  critical-history
-                "
-              >
-
-                <div className="history-year">
-
-                  2013
-
-                </div>
+            <div className="timeline-item">
 
 
-                <div>
+              <div className="timeline-marker">
 
-                  <h3>
-
-                    Kedarnath Flood Disaster
-
-                  </h3>
-
-
-                  <p>
-
-                    Extreme rainfall and flooding caused widespread
-                    destruction across Kedarnath and surrounding
-                    areas.
-
-                  </p>
-
-
-                  <span>
-
-                    Kedarnath • Rudraprayag
-
-                  </span>
-
-                </div>
+                2013
 
               </div>
 
 
-
-              {/* CHAMOLI */}
-
-              <div
-                className="
-                  history-card
-                  high-history
-                "
-              >
-
-                <div className="history-year">
-
-                  2021
-
-                </div>
+              <div className="timeline-content">
 
 
-                <div>
+                <h3>
 
-                  <h3>
+                  {
+                    t.kedarnathTitle
+                  }
 
-                    Chamoli Flash Flood
-
-                  </h3>
-
-
-                  <p>
-
-                    A sudden flood affected the Rishiganga and
-                    Dhauliganga valleys and damaged infrastructure.
-
-                  </p>
-
-
-                  <span>
-
-                    Chamoli District
-
-                  </span>
-
-                </div>
-
-              </div>
-
-
-
-              {/* MOUNTAIN FLOOD RISK */}
-
-              <div
-                className="
-                  history-card
-                  moderate-history
-                "
-              >
-
-                <div className="history-year">
-
-                  ⚠
-
-                </div>
-
-
-                <div>
-
-                  <h3>
-
-                    Mountain Flood Risk
-
-                  </h3>
-
-
-                  <p>
-
-                    Steep terrain, intense rainfall, landslides and
-                    rapidly rising rivers can create dangerous
-                    flash-flood conditions.
-
-                  </p>
-
-
-                  <span>
-
-                    Stay alert • Know your route
-
-                  </span>
-
-                </div>
-
-              </div>
-
-            </div>
-
-
-
-            {/* ========================================
-                FLOODSAFE MISSION
-            ======================================== */}
-
-            <div className="safety-message">
-
-              <span className="safety-icon">
-
-                🛡️
-
-              </span>
-
-
-              <div>
-
-                <strong>
-
-                  FLOODSAFE Mission
-
-                </strong>
+                </h3>
 
 
                 <p>
 
-                  Predict risk. Visualize danger. Find safer routes.
+                  {
+                    t.kedarnathText
+                  }
 
                 </p>
 
+
               </div>
+
 
             </div>
 
+
+
+            <div className="timeline-line">
+            </div>
+
+
+
+            {/* 2021 */}
+
+            <div className="timeline-item">
+
+
+              <div className="timeline-marker">
+
+                2021
+
+              </div>
+
+
+              <div className="timeline-content">
+
+
+                <h3>
+
+                  {
+                    t.chamoliTitle
+                  }
+
+                </h3>
+
+
+                <p>
+
+                  {
+                    t.chamoliText
+                  }
+
+                </p>
+
+
+              </div>
+
+
+            </div>
+
+
           </div>
 
-        </section>
+
+
+          <div className="login-quote">
+
+
+            <span>
+              “
+            </span>
+
+
+            <p>
+
+              {
+                t.quote
+              }
+
+            </p>
+
+
+          </div>
+
+
+        </aside>
 
 
 
         {/* ========================================
-            RIGHT REGISTRATION PANEL
+            CENTER - FORM
         ======================================== */}
 
-        <section className="registration-panel">
-
-          <div className="login-card">
+        <section className="login-center-column">
 
 
-            {/* LOGO */}
+          <div className="professional-login-card">
 
-            <div className="login-logo">
 
-              FLOODSAFE
+            {/* FORM HEADING */}
+
+            <div className="login-card-heading">
+
+
+              <span className="login-card-eyebrow">
+
+                {
+                  t.getStarted
+                }
+
+              </span>
+
+
+              <h2>
+
+                {
+                  t.profileTitle
+                }
+
+              </h2>
+
+
+              <p>
+
+                {
+                  t.profileDescription
+                }
+
+              </p>
+
 
             </div>
 
 
-            <p className="login-small">
-
-              FLOOD SAFETY REGISTRATION
-
-            </p>
-
-
-            <h2>
-
-              Welcome to FLOODSAFE
-
-            </h2>
-
-
-            <p className="login-description">
-
-              Enter your basic information to continue to FLOODSAFE.
-
-            </p>
-
-
-
-            {/* ========================================
-                FORM
-            ======================================== */}
 
             <form
-              className="login-form"
-              onSubmit={handleSubmit}
+
+              className="professional-login-form"
+
+              onSubmit={
+                handleSubmit
+              }
+
             >
 
 
@@ -1085,11 +1630,14 @@ function LoginPage({ onLogin }: LoginPageProps) {
                   NAME
               ======================================== */}
 
-              <div className="input-group">
+              <div className="professional-field">
+
 
                 <label>
 
-                  Full Name
+                  {
+                    t.fullName
+                  }
 
                 </label>
 
@@ -1100,7 +1648,9 @@ function LoginPage({ onLogin }: LoginPageProps) {
 
                   name="name"
 
-                  placeholder="Enter your full name"
+                  placeholder={
+                    t.fullNamePlaceholder
+                  }
 
                   value={
                     formData.name
@@ -1114,6 +1664,7 @@ function LoginPage({ onLogin }: LoginPageProps) {
 
                 />
 
+
               </div>
 
 
@@ -1122,11 +1673,14 @@ function LoginPage({ onLogin }: LoginPageProps) {
                   MOBILE
               ======================================== */}
 
-              <div className="input-group">
+              <div className="professional-field">
+
 
                 <label>
 
-                  Mobile Number
+                  {
+                    t.mobile
+                  }
 
                 </label>
 
@@ -1137,7 +1691,9 @@ function LoginPage({ onLogin }: LoginPageProps) {
 
                   name="mobile"
 
-                  placeholder="Enter your 10-digit mobile number"
+                  placeholder={
+                    t.mobilePlaceholder
+                  }
 
                   value={
                     formData.mobile
@@ -1149,33 +1705,53 @@ function LoginPage({ onLogin }: LoginPageProps) {
 
                   pattern="[0-9]{10}"
 
-                  maxLength={10}
+                  maxLength={
+                    10
+                  }
 
                   required
 
                 />
+
 
               </div>
 
 
 
               {/* ========================================
-                  CURRENT LOCATION
+                  LOCATION
               ======================================== */}
 
-              <div className="input-group">
+              <div className="professional-field">
 
-                <label>
 
-                  Current Place
+                <div className="field-heading-row">
 
-                </label>
+
+                  <label>
+
+                    {
+                      t.currentLocation
+                    }
+
+                  </label>
+
+
+                  <span>
+
+                    {
+                      t.locationHelp
+                    }
+
+                  </span>
+
+
+                </div>
+
 
 
                 <div className="location-search-wrapper">
 
-
-                  {/* LOCATION INPUT */}
 
                   <input
 
@@ -1185,7 +1761,9 @@ function LoginPage({ onLogin }: LoginPageProps) {
 
                     autoComplete="off"
 
-                    placeholder="Start typing a place in Uttarakhand..."
+                    placeholder={
+                      t.locationPlaceholder
+                    }
 
                     value={
                       formData.place
@@ -1213,12 +1791,8 @@ function LoginPage({ onLogin }: LoginPageProps) {
 
                     onBlur={() => {
 
-                      /*
-                        Small delay so user
-                        can click suggestion.
-                      */
-
                       setTimeout(
+
                         () => {
 
                           setShowSuggestions(
@@ -1228,9 +1802,11 @@ function LoginPage({ onLogin }: LoginPageProps) {
                         },
 
                         200
+
                       );
 
                     }}
+
 
                     required
 
@@ -1238,25 +1814,25 @@ function LoginPage({ onLogin }: LoginPageProps) {
 
 
 
-                  {/* ========================================
-                      SEARCH LOADING
-                  ======================================== */}
+                  {/* SEARCH STATUS */}
 
                   {searchLoading &&
                     locationTyping && (
 
-                    <div className="location-searching">
+                    <span className="new-search-status">
 
-                      Searching...
+                      {
+                        t.searching
+                      }
 
-                    </div>
+                    </span>
 
                   )}
 
 
 
                   {/* ========================================
-                      AUTOCOMPLETE SUGGESTIONS
+                      LOCATION SUGGESTIONS
                   ======================================== */}
 
                   {showSuggestions &&
@@ -1292,14 +1868,14 @@ function LoginPage({ onLogin }: LoginPageProps) {
                         >
 
 
-                          <span className="suggestion-icon">
+                          <span className="suggestion-pin">
 
-                            📍
+                            ●
 
                           </span>
 
 
-                          <div className="suggestion-text">
+                          <div>
 
 
                             <strong>
@@ -1332,6 +1908,7 @@ function LoginPage({ onLogin }: LoginPageProps) {
 
                   )}
 
+
                 </div>
 
 
@@ -1344,7 +1921,7 @@ function LoginPage({ onLogin }: LoginPageProps) {
 
                   type="button"
 
-                  className="gps-button"
+                  className="new-gps-button"
 
                   onClick={
                     getCurrentLocation
@@ -1356,25 +1933,32 @@ function LoginPage({ onLogin }: LoginPageProps) {
 
                 >
 
+
+                  <span className="gps-circle">
+
+                    ◎
+
+                  </span>
+
+
                   {locationLoading
 
-                    ? "📡 Detecting Location..."
+                    ? t.detectingLocation
 
-                    : "📍 Use My Current Location"
+                    : t.useLocation
 
                   }
+
 
                 </button>
 
 
 
-                {/* ========================================
-                    GPS ERROR
-                ======================================== */}
+                {/* GPS ERROR */}
 
                 {locationError && (
 
-                  <p className="location-error">
+                  <p className="new-location-error">
 
                     {
                       locationError
@@ -1386,15 +1970,15 @@ function LoginPage({ onLogin }: LoginPageProps) {
 
 
 
-                {/* ========================================
-                    GPS SUCCESS
-                ======================================== */}
+                {/* GPS SUCCESS */}
 
                 {gpsDetected && (
 
-                  <p className="location-success">
+                  <p className="new-location-success">
 
-                    ✓ GPS location detected
+                    {
+                      t.locationDetected
+                    }
 
                   </p>
 
@@ -1402,21 +1986,24 @@ function LoginPage({ onLogin }: LoginPageProps) {
 
 
 
-                {/* ========================================
-                    AUTOCOMPLETE LOCATION SELECTED
-                ======================================== */}
+                {/* AUTOCOMPLETE SELECTED */}
 
                 {!gpsDetected &&
+
                   formData.latitude !== 0 &&
+
                   formData.longitude !== 0 && (
 
-                  <p className="location-selected">
+                  <p className="new-location-success">
 
-                    ✓ Location selected
+                    {
+                      t.locationSelected
+                    }
 
                   </p>
 
                 )}
+
 
               </div>
 
@@ -1426,11 +2013,14 @@ function LoginPage({ onLogin }: LoginPageProps) {
                   EMAIL
               ======================================== */}
 
-              <div className="input-group">
+              <div className="professional-field">
+
 
                 <label>
 
-                  Email Address
+                  {
+                    t.email
+                  }
 
                 </label>
 
@@ -1441,7 +2031,9 @@ function LoginPage({ onLogin }: LoginPageProps) {
 
                   name="email"
 
-                  placeholder="Enter your email address"
+                  placeholder={
+                    t.emailPlaceholder
+                  }
 
                   value={
                     formData.email
@@ -1455,46 +2047,313 @@ function LoginPage({ onLogin }: LoginPageProps) {
 
                 />
 
+
               </div>
 
 
 
               {/* ========================================
-                  CONTINUE BUTTON
+                  CONTINUE
               ======================================== */}
 
               <button
 
                 type="submit"
 
-                className="login-button"
+                className="professional-continue-button"
 
               >
 
-                Continue to FLOODSAFE →
+
+                {
+                  t.continue
+                }
+
+
+                <span>
+
+                  →
+
+                </span>
+
 
               </button>
+
 
             </form>
 
 
 
-            {/* ========================================
-                PRIVACY MESSAGE
-            ======================================== */}
+            {/* PRIVACY MESSAGE */}
 
-            <p className="privacy-message">
+            <p className="professional-privacy">
 
-              🔒 Your location and information should only
-              be used for flood safety and response purposes.
+              {
+                t.privacy
+              }
 
             </p>
 
+
           </div>
+
 
         </section>
 
-      </div>
+
+
+        {/* ========================================
+            RIGHT - LOCATION INFORMATION
+        ======================================== */}
+
+        <aside className="login-info-column login-right-info">
+
+
+          <p className="login-side-label">
+
+            {
+              t.whyLocation
+            }
+
+          </p>
+
+
+          <h2 className="right-info-heading">
+
+            {
+              t.locationInfoTitle
+            }
+
+          </h2>
+
+
+
+          <div className="location-benefits">
+
+
+            {/* 01 */}
+
+            <div className="benefit-item">
+
+
+              <div className="benefit-number">
+
+                01
+
+              </div>
+
+
+              <div>
+
+
+                <h3>
+
+                  {
+                    t.rainfall
+                  }
+
+                </h3>
+
+
+                <p>
+
+                  {
+                    t.rainfallText
+                  }
+
+                </p>
+
+
+              </div>
+
+
+            </div>
+
+
+
+            {/* 02 */}
+
+            <div className="benefit-item">
+
+
+              <div className="benefit-number">
+
+                02
+
+              </div>
+
+
+              <div>
+
+
+                <h3>
+
+                  {
+                    t.river
+                  }
+
+                </h3>
+
+
+                <p>
+
+                  {
+                    t.riverText
+                  }
+
+                </p>
+
+
+              </div>
+
+
+            </div>
+
+
+
+            {/* 03 */}
+
+            <div className="benefit-item">
+
+
+              <div className="benefit-number">
+
+                03
+
+              </div>
+
+
+              <div>
+
+
+                <h3>
+
+                  {
+                    t.alerts
+                  }
+
+                </h3>
+
+
+                <p>
+
+                  {
+                    t.alertsText
+                  }
+
+                </p>
+
+
+              </div>
+
+
+            </div>
+
+
+
+            {/* 04 */}
+
+            <div className="benefit-item">
+
+
+              <div className="benefit-number">
+
+                04
+
+              </div>
+
+
+              <div>
+
+
+                <h3>
+
+                  {
+                    t.navigation
+                  }
+
+                </h3>
+
+
+                <p>
+
+                  {
+                    t.navigationText
+                  }
+
+                </p>
+
+
+              </div>
+
+
+            </div>
+
+
+          </div>
+
+
+
+          {/* ========================================
+              STAY PREPARED
+          ======================================== */}
+
+          <div className="prepared-card">
+
+
+            <p className="prepared-label">
+
+              {
+                t.stayPrepared
+              }
+
+            </p>
+
+
+            <p>
+
+              {
+                t.preparedText
+              }
+
+            </p>
+
+
+          </div>
+
+
+        </aside>
+
+
+      </main>
+
+
+
+      {/* ========================================
+          FOOTER
+      ======================================== */}
+
+      <footer className="login-page-footer">
+
+
+        <span>
+
+          FLOODSAFE
+
+        </span>
+
+
+        <p>
+
+          {
+            t.footer
+          }
+
+        </p>
+
+
+      </footer>
+
 
     </div>
 
