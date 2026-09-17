@@ -75,8 +75,23 @@ async function getJSON<T>(path: string): Promise<T> {
   return res.json();
 }
 
-export function getWardsGeoJSON() {
-  return getJSON<GeoJSON.FeatureCollection<GeoJSON.Geometry, WardFeatureProperties>>("/wards.geojson");
+// The deployed FFGS API now requires a bbox on /wards.geojson (it didn't
+// when this client was first written) -- default to all of Uttarakhand,
+// matching the coordinate range the routing graph in the main FloodSafe
+// app itself loads (77.5502497-81.0665769 lon, 28.6752296-31.4570175 lat),
+// so a plain getWardsGeoJSON() call still returns every ward statewide.
+const UTTARAKHAND_BBOX = { minLon: 77.5, minLat: 28.6, maxLon: 81.1, maxLat: 31.5 };
+
+export function getWardsGeoJSON(
+  bbox: { minLon: number; minLat: number; maxLon: number; maxLat: number } = UTTARAKHAND_BBOX
+) {
+  const params = new URLSearchParams({
+    min_lon: String(bbox.minLon),
+    min_lat: String(bbox.minLat),
+    max_lon: String(bbox.maxLon),
+    max_lat: String(bbox.maxLat),
+  });
+  return getJSON<GeoJSON.FeatureCollection<GeoJSON.Geometry, WardFeatureProperties>>(`/wards.geojson?${params}`);
 }
 
 export function getGridGeoJSON(bbox: { minLon: number; minLat: number; maxLon: number; maxLat: number }) {
