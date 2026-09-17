@@ -1,4 +1,4 @@
-import { useState, lazy, Suspense, useCallback, memo } from "react";
+import { useState, lazy, Suspense, useCallback, useMemo, memo } from "react";
 import LoginPage from "./components/loginpage";
 import LocationStats from "./components/Locationstats";
 import SOSButton from "./components/SOSButton";
@@ -246,6 +246,20 @@ function App() {
     setContacts(updatedContacts);
   }, []);
 
+  // A new {lat, lon} object literal here on every App render would defeat
+  // MapSection's memo() (shallow prop comparison sees a "changed" prop even
+  // when the values are identical), forcing the MapLibre map inside it to
+  // re-render -- and re-render often, given how many pieces of state (hover,
+  // modals, live stats) live in this tree. That's what was showing up as
+  // the map flickering / never settling.
+  const userLocation = useMemo(
+    () =>
+      userData?.latitude && userData?.longitude
+        ? { lat: userData.latitude, lon: userData.longitude }
+        : null,
+    [userData?.latitude, userData?.longitude]
+  );
+
   if (!loggedIn || !userData) {
     return (
       <LoginPage
@@ -287,13 +301,7 @@ function App() {
         <HeroSection />
 
         {/* MAP SECTION — defaults to the ward the user is in, if we have their location */}
-        <MapSection
-          userLocation={
-            userData.latitude && userData.longitude
-              ? { lat: userData.latitude, lon: userData.longitude }
-              : null
-          }
-        />
+        <MapSection userLocation={userLocation} />
 
         {/* LIVE USER LOCATION STATS */}
         <LocationStats
