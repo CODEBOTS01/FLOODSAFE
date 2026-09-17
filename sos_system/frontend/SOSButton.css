@@ -1,0 +1,422 @@
+/* ================================================================
+   FLOODSAFE — SOS Emergency Alert Styles
+   Scoped to .sos-* classes to avoid conflicts with App.css
+   ================================================================ */
+
+/* ── CSS variables (scoped) ──────────────────────────────────── */
+.sos-scope {
+  --sos-red: #ef4444;
+  --sos-red-dark: #991b1b;
+  --sos-red-glow: rgba(239, 68, 68, 0.45);
+  --sos-red-hover: #dc2626;
+  --sos-warning: #f59e0b;
+  --sos-success: #22c55e;
+  --sos-surface: rgba(15, 17, 23, 0.97);
+  --sos-surface-alt: rgba(30, 33, 48, 0.95);
+  --sos-border: rgba(55, 65, 100, 0.7);
+  --sos-text: #e4e4e7;
+  --sos-text-muted: #9ca3af;
+  --sos-radius: 14px;
+}
+
+/* ── Floating Action Button ──────────────────────────────────── */
+.sos-fab {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 9000;
+
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  border: none;
+
+  background: radial-gradient(circle at 38% 32%, #ff5555, var(--sos-red-dark, #991b1b));
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  line-height: 1.15;
+  text-align: center;
+
+  cursor: pointer;
+  user-select: none;
+
+  box-shadow:
+    0 0 0 0 rgba(239, 68, 68, 0.6),
+    0 4px 20px rgba(0, 0, 0, 0.45);
+
+  animation: sos-fab-pulse 2.4s ease-in-out infinite;
+
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.sos-fab:hover {
+  transform: scale(1.08);
+  animation: none;
+  box-shadow:
+    0 0 0 6px rgba(239, 68, 68, 0.25),
+    0 8px 28px rgba(0, 0, 0, 0.5);
+}
+
+.sos-fab:active {
+  transform: scale(0.95);
+}
+
+.sos-fab:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  animation: none;
+}
+
+@keyframes sos-fab-pulse {
+  0%   { box-shadow: 0 0 0 0   rgba(239,68,68,0.55), 0 4px 20px rgba(0,0,0,0.45); }
+  60%  { box-shadow: 0 0 0 14px rgba(239,68,68,0),    0 4px 20px rgba(0,0,0,0.45); }
+  100% { box-shadow: 0 0 0 0   rgba(239,68,68,0),     0 4px 20px rgba(0,0,0,0.45); }
+}
+
+/* ── Backdrop overlay ────────────────────────────────────────── */
+.sos-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9100;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: sos-fade-in 0.18s ease;
+}
+
+@keyframes sos-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Modal card ──────────────────────────────────────────────── */
+.sos-modal {
+  width: 100%;
+  max-width: 420px;
+  background: var(--sos-surface);
+  border: 1px solid var(--sos-border);
+  border-radius: var(--sos-radius);
+  box-shadow:
+    0 0 0 1px rgba(239, 68, 68, 0.18),
+    0 32px 80px rgba(0, 0, 0, 0.7);
+  color: var(--sos-text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow: hidden;
+  animation: sos-slide-up 0.22s cubic-bezier(0.34, 1.32, 0.64, 1);
+}
+
+@keyframes sos-slide-up {
+  from { opacity: 0; transform: translateY(20px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0)    scale(1);    }
+}
+
+/* Modal header strip */
+.sos-modal-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid var(--sos-border);
+  background: rgba(239, 68, 68, 0.08);
+}
+
+.sos-modal-header-icon {
+  font-size: 22px;
+  flex-shrink: 0;
+}
+
+.sos-modal-header h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #fff;
+}
+
+/* Modal body */
+.sos-modal-body {
+  padding: 20px 20px 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* Warning banner */
+.sos-warning-banner {
+  display: flex;
+  gap: 10px;
+  padding: 12px 14px;
+  background: rgba(245, 158, 11, 0.1);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  border-radius: 10px;
+  font-size: 0.84rem;
+  color: #fde68a;
+  line-height: 1.45;
+}
+
+.sos-warning-banner-icon {
+  flex-shrink: 0;
+  font-size: 16px;
+  padding-top: 1px;
+}
+
+/* What happens list */
+.sos-what-happens {
+  font-size: 0.84rem;
+  color: var(--sos-text-muted);
+  line-height: 1.6;
+}
+
+.sos-what-happens strong {
+  color: var(--sos-text);
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.85rem;
+}
+
+.sos-what-happens ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.sos-what-happens li {
+  margin-bottom: 3px;
+}
+
+/* Notice at bottom of body */
+.sos-notice {
+  font-size: 0.75rem;
+  color: var(--sos-text-muted);
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--sos-border);
+  border-radius: 8px;
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* ── Sending state ───────────────────────────────────────────── */
+.sos-sending-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 30px 20px;
+  text-align: center;
+}
+
+.sos-spinner {
+  width: 44px;
+  height: 44px;
+  border: 4px solid rgba(239, 68, 68, 0.2);
+  border-top-color: var(--sos-red);
+  border-radius: 50%;
+  animation: sos-spin 0.8s linear infinite;
+}
+
+@keyframes sos-spin {
+  to { transform: rotate(360deg); }
+}
+
+.sos-sending-state p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--sos-text-muted);
+}
+
+/* ── Result state ────────────────────────────────────────────── */
+.sos-result {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sos-result-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+.sos-result-header-icon {
+  font-size: 22px;
+}
+
+.sos-result-meta {
+  font-size: 0.82rem;
+  color: var(--sos-text-muted);
+  white-space: pre-line;
+  line-height: 1.55;
+}
+
+/* Per-contact rows */
+.sos-contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.sos-contact-row {
+  font-size: 0.85rem;
+  padding: 7px 11px;
+  border-radius: 8px;
+  background: var(--sos-surface-alt);
+}
+
+.sos-contact-row.status-sent {
+  border-left: 3px solid var(--sos-success);
+}
+
+.sos-contact-row.status-failed {
+  border-left: 3px solid var(--sos-red);
+  color: #fca5a5;
+}
+
+.sos-contact-row.status-pending {
+  border-left: 3px solid var(--sos-text-muted);
+  color: var(--sos-text-muted);
+}
+
+/* ── Modal footer (action buttons) ──────────────────────────── */
+.sos-modal-footer {
+  display: flex;
+  gap: 10px;
+  padding: 16px 20px 20px;
+  border-top: 1px solid var(--sos-border);
+}
+
+.sos-btn-cancel {
+  flex: 1;
+  padding: 11px 16px;
+  border-radius: 9px;
+  border: 1px solid var(--sos-border);
+  background: transparent;
+  color: var(--sos-text-muted);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.sos-btn-cancel:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--sos-text);
+}
+
+/* Confirm button — visually dominant */
+.sos-btn-confirm {
+  flex: 2;
+  padding: 11px 16px;
+  border-radius: 9px;
+  border: none;
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35);
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+}
+
+.sos-btn-confirm:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.5);
+  background: linear-gradient(135deg, #f87171, #dc2626);
+}
+
+.sos-btn-confirm:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.sos-btn-confirm:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* Retry button */
+.sos-btn-retry {
+  flex: 1;
+  padding: 11px 16px;
+  border-radius: 9px;
+  border: 1px solid var(--sos-red);
+  background: transparent;
+  color: #fca5a5;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.sos-btn-retry:hover:not(:disabled) {
+  background: rgba(239, 68, 68, 0.12);
+}
+
+.sos-btn-retry:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Dismiss button */
+.sos-btn-dismiss {
+  flex: 1;
+  padding: 11px 16px;
+  border-radius: 9px;
+  border: 1px solid var(--sos-border);
+  background: transparent;
+  color: var(--sos-text-muted);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.sos-btn-dismiss:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--sos-text);
+}
+
+/* ── Test mode button (dev only) ─────────────────────────────── */
+.sos-test-btn {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px dashed rgba(245, 158, 11, 0.45);
+  background: transparent;
+  color: rgba(245, 158, 11, 0.75);
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  margin-top: 2px;
+}
+
+.sos-test-btn:hover {
+  background: rgba(245, 158, 11, 0.08);
+  color: var(--sos-warning);
+}
+
+/* ── Responsive ─────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .sos-fab {
+    bottom: 20px;
+    right: 20px;
+    width: 58px;
+    height: 58px;
+    font-size: 10px;
+  }
+
+  .sos-modal {
+    max-width: 100%;
+  }
+}
