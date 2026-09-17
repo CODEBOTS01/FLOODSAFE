@@ -1,10 +1,14 @@
 /**
  * SOSApiService — communicates with the SOS Express backend.
  * All TextBee credentials remain server-side.
- * API base URL is read from VITE_SOS_API_URL (falls back to /api via Vite proxy).
+ * API base URL is read from VITE_SOS_API_URL, falling back to the deployed
+ * SOS backend directly — "/api" only resolves via the Vite dev-server proxy
+ * (see vite.config.ts); the production build is a static site with no
+ * server-side proxy, so without VITE_SOS_API_URL set at build time, that
+ * relative path 404s in production.
  */
 
-const API_BASE = import.meta.env.VITE_SOS_API_URL ?? '/api';
+const API_BASE = import.meta.env.VITE_SOS_API_URL ?? 'https://ffgs-sos-backend.onrender.com/api';
 const TIMEOUT_MS = 30_000;
 
 // ── Types ─────────────────────────────────────────────────────────────

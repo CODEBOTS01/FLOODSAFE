@@ -27,13 +27,20 @@ app.use(
   })
 );
 
-// ── CORS — allow Vite dev server and preview ──────────────────────────
+// ── CORS — allow the Vite dev server/preview and the deployed dashboard ──
+const ALLOWED_ORIGINS = [
+  'http://localhost:5173', // vite dev
+  'http://localhost:4173', // vite preview
+  'https://floodsafe-ffgs-dashboard.onrender.com', // deployed dashboard
+  'https://floodsafe-u207.onrender.com', // main FloodSafe app
+  ...(process.env.EXTRA_CORS_ORIGINS
+    ? process.env.EXTRA_CORS_ORIGINS.split(',').map((o) => o.trim())
+    : []),
+];
+
 app.use(
   cors({
-    origin: [
-      'http://localhost:5173', // vite dev
-      'http://localhost:4173', // vite preview
-    ],
+    origin: ALLOWED_ORIGINS,
     methods: ['POST', 'OPTIONS'],
     allowedHeaders: ['Content-Type'],
   })

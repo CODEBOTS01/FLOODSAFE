@@ -4,7 +4,11 @@
  * Separate from sosApiService.ts, which talks to the Node SOS backend.
  */
 
-const FFGS_API_URL = import.meta.env.VITE_FFGS_API_URL || "/ffgs-api";
+// Falls back to the deployed FFGS API directly — "/ffgs-api" only resolves
+// via the Vite dev-server proxy (see vite.config.ts); the production build
+// is a static site with no server-side proxy, so without VITE_FFGS_API_URL
+// set at build time, that relative path 404s in production.
+const FFGS_API_URL = import.meta.env.VITE_FFGS_API_URL || "https://ffgs-api.onrender.com";
 
 export interface WardFeatureProperties {
   ward_id: number;
